@@ -4,25 +4,25 @@ class Button extends Text {
 
 		super(content);
 
-		this._type = 'button';
-		this._className = "";
+		this.type = 'button';
+		this.className = "";
 		
 	}
 
 	show(effect) {
 
-		this._className = '';
-		this._dimensions = null;
+		this.className = '';
+		this.dimensions = null;
 
 		var returnValue = super.show(effect);
 
-		this._element.addEventListener("click", this._selectHandler);
+		this.element.addEventListener("click", this.selectHandler);
 
 		return returnValue;
 	}
 
 	onSelect(handler) {
-		this._selectHandler = handler;
+		this.selectHandler = handler;
 
 		return this;
 	}

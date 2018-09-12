@@ -8,12 +8,12 @@ var game = {
 		introRoom.init();
 		introRoom.enter();
 	
-		//var overlayContainer = document.getElementById('overlayContainer2');
-		//if (overlayContainer) overlayContainer.classList.add('hidden');
+		/*var overlayContainer = document.getElementById('overlayContainer2');
+		if (overlayContainer) overlayContainer.classList.add('hidden');
 
-		//var corridorRoom = new CorridorRoom("corridor");
-		//corridorRoom.init();
-		//corridorRoom.enter();
+		var corridorRoom = new CorridorRoom("corridor");
+		corridorRoom.init();
+		corridorRoom.enter();*/
 
 		// move to engine init?
 		requestAnimationFrame(mainLoop);

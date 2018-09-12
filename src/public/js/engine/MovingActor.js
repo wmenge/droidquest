@@ -24,6 +24,31 @@ class MovingActor {
 
 	}
 
+	setPosition(position) {
+		this.position = position;
+		return this;
+	}
+
+	setOrigin(origin) {
+		this.origin = origin;
+		return this;
+	}
+
+	setDimensions(dimensions) {
+		this.dimensions = dimensions;
+		return this;
+	}
+
+	setZIndex(zIndex) {
+		this.zIndex = zIndex;
+		return this;
+	}
+
+	setVelocity(velocity) {
+		this.velocity = velocity;
+		return this;
+	}
+
 	// Actor
 	show() {
 		engine.drawables.push(this);

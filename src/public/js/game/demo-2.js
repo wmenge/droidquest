@@ -21,9 +21,11 @@ class TatooineRoom extends Room {
 
 		super.enter();
 
-		this.tower = new Prop('./resources/tower.png');
-		this.tower.origin = { x: -58 / 2, y: -161 };
-		this.tower.position = {x: 430, y: 176 };
+		this.tower = new Prop('./resources/tower.png')
+			.setOrigin({ x: -58 / 2, y: -161 })
+			.setDimensions({ width: 58, height: 161 })
+			.setPosition({x: 430, y: 176 });
+
 		this.tower.show();
 
 		/* 

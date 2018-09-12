@@ -1,38 +1,39 @@
 // Refactor Prop, MovingActor into Prop, Actor, Sprite, Spritesheet
 class Prop { 
+
 	constructor(imageUrl) {
 
 		// refactor into sprite/spritesheet
-		this._image = new Image();
-		this._image.src = imageUrl;
+		this.image = new Image();
+		this.image.src = imageUrl;
 		
-		this._position = { x: 0, y: 0 };
-		this._origin = { x: 0, y: 0 };
-		this._dimensions = { width: 0, height: 0 };
+		this.position = { x: 0, y: 0 };
+		this.origin = { x: 0, y: 0 };
+		this.dimensions = { width: 0, height: 0 };
 
 		// Actor/prop
 		this.zIndex = 0;
-	
+
 		// call back function
 		this.onTarget = null;
 	}
 
-	position(position) {
-		this._position = position;
+	setPosition(position) {
+		this.position = position;
 		return this;
 	}
 
-	origin(origin) {
-		this._origin = origin;
+	setOrigin(origin) {
+		this.origin = origin;
 		return this;
 	}
 
-	dimensions(dimensions) {
-		this._dimensions = dimensions;
+	setDimensions(dimensions) {
+		this.dimensions = dimensions;
 		return this;
 	}
 
-	zIndex(zIndex) {
+	setZIndex(zIndex) {
 		this.zIndex = zIndex;
 		return this;
 	}
@@ -42,8 +43,8 @@ class Prop {
 
 		ctx.save();
 
-		ctx.translate(this._position.x, this._position.y);
-		ctx.drawImage(this._image, this._origin.x, this._origin.y);
+		ctx.translate(this.position.x, this.position.y);
+		ctx.drawImage(this.image, this.origin.x, this.origin.y);
 
 		ctx.restore();
 
@@ -53,12 +54,12 @@ class Prop {
 	get box() {
 		return [ 
 			{ 
-				x: this._position.x + this._origin.x,
-				y: this._position.y + this._origin.y
+				x: this.position.x + this.origin.x,
+				y: this.position.y + this.origin.y
 			},
 			{ 
-				x: this._position.x + this._origin.x + this._dimensions.width,
-				y: this._position.y + this._origin.y + this._dimensions.height
+				x: this.position.x + this.origin.x + this.dimensions.width,
+				y: this.position.y + this.origin.y + this.dimensions.height
 			}
 
 		]
@@ -86,7 +87,7 @@ class Prop {
 		ctx.translate(.5, .5);
 
 		// old position
-		ctx.strokeRect(this._position.x + this._origin.x, this._position.y + this._origin.y, this._dimensions.width, this._dimensions.height);
+		ctx.strokeRect(this.position.x + this.origin.x, this.position.y + this.origin.y, this.dimensions.width, this.dimensions.height);
 
 		ctx.restore();
 		

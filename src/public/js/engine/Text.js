@@ -2,92 +2,87 @@ class Text {
 	
 	constructor(content) {
 
-		this._type = "div"
-		this._content = content;
-		this._position = { x: 0, y: 0 };
-		this._dimensions = null;
-		this._className = 'textOverlay';
-		this._classList = []
+		this.type = "div"
+		this.content = content;
+		this.position = { x: 0, y: 0 };
+		this.dimensions = null;
+		this.className = 'textOverlay';
+		this.classList = []
 		
 	}
 
-	type(type) {
-		this._type = type;
+	setType(type) {
+		this.type = type;
 		return this;
 	}
 
-	/*text(text) {
-		this._text = text;
-		return this;
-	}*/
-
-	position(position) {
-		this._position = position;
+	setPosition(position) {
+		this.position = position;
 		return this;
 	}
 
-	dimensions(dimensions) {
-		this._dimensions = dimensions;
+	setDimensions(dimensions) {
+		this.dimensions = dimensions;
 		return this;
 	}
 
-	className(className) {
-		this._classList.push(className);
+	addClassName(className) {
+		this.classList.push(className);
 		return this;
 	}
 
 	show(effect) {
 
-		console.log('show', this._content, 'with effect: ', effect);
+		console.log('show', this.content, 'with effect: ', effect);
 		
-		this._element = document.createElement(this._type);
+		this.element = document.createElement(this.type);
 		
-		if (this._className) {
-			this._element.classList.add(this._className);
+		if (this.className) {
+			this.element.classList.add(this.className);
 		}
 
 		if (effect) {
-			this._element.classList.add(effect);
+			this.element.classList.add(effect);
 		}
 
-		//this._element.classList.add('debug');
+		//this.element.classList.add('debug');
 
-		for (var i in this._classList) {
-			this._element.classList.add(this._classList[i]);
+		for (var i in this.classList) {
+			this.element.classList.add(this.classList[i]);
 		}
 		
 		// rough positioning
-		this._element.style.marginLeft = (this._position.x / 460 * 100) + "%";
-		this._element.style.marginTop = (this._position.y / 240 * 100) + "%";
+		this.element.style.marginLeft = (this.position.x / 460 * 100) + "%";
+		this.element.style.marginTop = (this.position.y / 240 * 100) + "%";
 
 		// rough sizing
-		if (this._dimensions) {
-			this._element.style.width = (this._dimensions.width / 460 * 100) + "%";
-			this._element.style.height = (this._dimensions.height / 240 * 100) + "%";
+		if (this.dimensions) {
+			this.element.style.width = (this.dimensions.width / 460 * 100) + "%";
+			this.element.style.height = (this.dimensions.height / 240 * 100) + "%";
 		}
 
-	    this._element.innerHTML = this._content;
-	    document.getElementById('overlayContainer').appendChild(this._element);
+	    this.element.innerHTML = this.content;
+	    document.getElementById('overlayContainer').appendChild(this.element);
 
 		return this;
 	}
 
 	hide(effect) {
 
-		console.log('hide', this._content, 'with effect: ', effect);
+		console.log('hide', this.content, 'with effect: ', effect);
 		
 		if (effect) {
-			console.log('show', this._content, 'with effect: ', effect);
+			console.log('show', this.content, 'with effect: ', effect);
 		} else {
-			console.log('show', this._content);
+			console.log('show', this.content);
 		}
 
 
 		if (effect) {
 			console.log('hide', effect);
-			this._element.classList.add(effect);
+			this.element.classList.add(effect);
 		} else {
-			this._element.parentNode.removeChild(this._element);
+			this.element.parentNode.removeChild(this.element);
 		}
 
 
