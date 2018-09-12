@@ -1,8 +1,6 @@
-class MovingActor extends mix(Object).with(EventDispatcher) {
+class MovingActor { 
 
 	constructor(imageUrl, isSpriteSheet = true) {
-
-		super();
 
 		// refactor out into sprite/spritesheet classes
 		this.image = new Image();
@@ -20,7 +18,9 @@ class MovingActor extends mix(Object).with(EventDispatcher) {
 
 		// Actor/prop
 		this.zIndex = 0;
-		//this.callbacks = [];
+
+		// call back function
+		this.onTarget = null;
 
 	}
 

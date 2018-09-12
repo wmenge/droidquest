@@ -28,9 +28,9 @@ class TatooineRoom extends Room {
 
 		var _this = this;
 
-		engine.addEventListener("target", function(event) {
+		engine.onTarget = function(event) {
 			game.tatooineRoom.mainActor.moveTo(event.detail, _this.walkbox);
-		});
+		};
 	}
 
 	enter() {

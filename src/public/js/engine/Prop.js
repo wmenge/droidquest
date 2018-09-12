@@ -1,9 +1,6 @@
 // Refactor Prop, MovingActor into Prop, Actor, Sprite, Spritesheet
-class Prop extends mix(Object).with(EventDispatcher) {
-
+class Prop { 
 	constructor(imageUrl) {
-
-		super();
 
 		// refactor into sprite/spritesheet
 		this._image = new Image();
@@ -16,6 +13,8 @@ class Prop extends mix(Object).with(EventDispatcher) {
 		// Actor/prop
 		this.zIndex = 0;
 	
+		// call back function
+		this.onTarget = null;
 	}
 
 	position(position) {

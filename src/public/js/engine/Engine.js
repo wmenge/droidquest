@@ -30,6 +30,12 @@ class Engine extends mix(Object).with(EventDispatcher) {
 
 		// on change, modify cursor (through setter)
 		this.enableInput = true;
+
+		var _this = this;
+
+		this.addEventListener("target", function(event) {
+			_this.onTarget(event);
+		});
 	}
 
 	//updateNeeded: false,
@@ -111,6 +117,10 @@ class Engine extends mix(Object).with(EventDispatcher) {
         //}
 	}
 
+	onTarget() {
+
+	}
+
 	// rename to getposition
 	getTarget(event) {
 
@@ -172,8 +182,8 @@ function onMouseClick(event) {
 	// if such an object can be found, let it handle the event
 	// if none can be found, let the engine handle the event
 	targetedObject = engine.getTargetedMovable(target);
-	if (targetedObject && targetedObject.hasEventListenersFor("target")) {
-		targetedObject.dispatchEvent("target", target);
+	if (targetedObject && targetedObject.onTarget) {
+		targetedObject.onTarget();
 	} else {
 	    engine.dispatchEvent("target", target);
 	}
@@ -191,7 +201,14 @@ function onTouchStart(event) {
 	for (var i = 0; i < touches.length; i++) {
 
 		target = engine.getTouchTarget(touches[i]);
-    	engine.dispatchEvent("target", target);
+
+		targetedObject = engine.getTargetedMovable(target);
+		if (targetedObject && targetedObject.onTarget) {
+			targetedObject.onTarget();
+		} else {
+		    engine.dispatchEvent("target", target);
+		}
+
     }
 }
 

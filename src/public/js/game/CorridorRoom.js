@@ -3,8 +3,6 @@ class CorridorRoom extends Room {
 	init() {
 		super.init();
 
-//		this.walkbox = new Walkbox().position({ x: 0, y: 128}).dimensions({ width: 460, height: 80});
-
 		this.walkbox = new Walkbox([ { x: 0, y: 128 }, { x: 460, y: 128 }, { x: 460, y: 220 }, { x: 0, y: 220 } ])
 		this.walkbox.activate();
 
@@ -16,8 +14,6 @@ class CorridorRoom extends Room {
 			.dimensions({ width: 18, height: 18 })
 			.position({x: 360, y: 180 })
 
-
-
 		game.obtainedPlans = false;
 
 		this.door = new MovingActor('./resources/door.png', false);
@@ -25,10 +21,6 @@ class CorridorRoom extends Room {
 		this.door.velocity = 20;
 		this.door.position = {x: 232, y: 41 };
 
-		/*this.doorPanel = new Prop('./resources/door-hide-panel.png');
-		this.doorPanel.dimensions = { width: 56, height: 79 };
-		this.doorPanel.position = {x: 183, y: 41 };
-*/
 		this.doorPanel = new Prop('./resources/door-hide-panel.png')
 			.dimensions({ width: 56, height: 79 })
 			.position({x: 183, y: 41 })
@@ -38,7 +30,6 @@ class CorridorRoom extends Room {
 		}
 
 		this.door.close = function() {
-			//this.zIndex = 1;
 			return this.moveRelative({ x: 49, y: 0});
 		}
 	}
@@ -65,71 +56,66 @@ class CorridorRoom extends Room {
 
 			engine.enableInput = true;
 		    
-		    engine.addEventListener("target", function(event) {
+		    engine.onTarget = function(event) {
+
+		    	//game.tatooineRoom.mainActor.moveTo(event.detail, _this.walkbox);
+
+		    	_this.mainActor.moveTo(event.detail, _this.walkbox);	
 
 		    	// Check if the new target is within the walkbox
-		    	if (_this.walkbox.contains(event.detail)) {
+		    	/*if (_this.walkbox.contains(event.detail)) {
 		    		_this.mainActor.moveTo(event.detail);	
 		    	} else {
 		    		// Correct the target so that it lies on the edge of the walkbox
 		    		var target = _this.walkbox.correctedTarget(_this.mainActor.position, event.detail);
 		    		_this.mainActor.moveTo(target);
-		    	}
+		    	}*/
 
-			});
+		    };
 
 		})(this);
 
-		this.plans.addEventListener("target", function(event) {
+		this.plans.onTarget = async function(event) {
 
-			(async function(_this) {
-
-				// Move actor to plans
-				await _this.mainActor.moveTo(_this.plans._position);
-				
-				// "pick up" plans
-				_this.plans.hide();
+			// Move actor to plans
+			await _this.mainActor.moveTo(_this.plans._position);
 			
-				// change game global state: Plans have been secured
-				game.obtainedPlans = true;
-			    
-			})(_this);
-		});
+			// "pick up" plans
+			_this.plans.hide();
+		
+			// change game global state: Plans have been secured
+			game.obtainedPlans = true;
+		};
 
 		// Open door
-		this.door.addEventListener("target", function(event) {
+		this.door.onTarget = async function(event) {
 
-			(async function(_this) {
+			// If plans are obtained, escape to space!
+			if (!game.obtainedPlans) return;
 
-				// If plans are obtained, escape to space!
-				if (game.obtainedPlans) {
+			// droid to door
+			await _this.mainActor.moveTo({ x: 256, y: 130});
 
-					// droid to door
-					await _this.mainActor.moveTo({ x: 256, y: 130});
+			engine.enableInput = false;
+			
+			// open door
+			await _this.door.open()
+			
+			// droid enters door
+			await _this.mainActor.moveRelative({ x: 0, y: -20});
+			
+			// close door over droid
+			_this.mainActor.zIndex = -1;
+			await _this.door.close();
 
-					engine.enableInput = false;
-					
-					// open door
-					await _this.door.open()
-					
-					// droid enters door
-					await _this.mainActor.moveRelative({ x: 0, y: -20});
-					
-					// close door over droid
-					_this.mainActor.zIndex = -1;
-					await _this.door.close();
+			// provide game or engine with a pause method
+			await _this.door.wait(1500);
 
-					// provide game or engine with a pause method
-					await _this.door.wait(1500);
-
-					var spaceRoom = new SpaceRoom("space");
-					spaceRoom.init();
-					_this.transitionTo(spaceRoom);
-				}
-
-			})(_this);
-
-		});
+			var spaceRoom = new SpaceRoom("space");
+			spaceRoom.init();
+			_this.transitionTo(spaceRoom);
+			
+		};
 
 	}
 
