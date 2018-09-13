@@ -34,10 +34,18 @@ class TatooineRoom extends Room {
 
 		super.enter();
 
+		engine.debugMode = true;
+
 		this.mainActor.position = { x: 80, y: 160};
 		this.mainActor.show();
 
 		this.tower.show();
+
+		this.text = new Text("Tech demo 1: Nervous drone pacing back and forth<br />Demonstrates synchronous (blocking) scripting")
+			.setPosition({ x: 10, y: 5 })
+			.addClassName('small')
+			.addClassName('outline')
+			.show();
 
 		/* 
 			Scripting moves

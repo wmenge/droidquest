@@ -21,12 +21,20 @@ class TatooineRoom extends Room {
 
 		super.enter();
 
+		engine.debugMode = true;
+
 		this.tower = new Prop('./resources/tower.png')
 			.setOrigin({ x: -58 / 2, y: -161 })
 			.setDimensions({ width: 58, height: 161 })
 			.setPosition({x: 430, y: 176 });
 
 		this.tower.show();
+
+		this.text = new Text("Tech demo 2: Army of droids, syncrhonized scripting")
+			.setPosition({ x: 10, y: 5 })
+			.addClassName('small')
+			.addClassName('outline')
+			.show();
 
 		/* 
 			Scripting moves

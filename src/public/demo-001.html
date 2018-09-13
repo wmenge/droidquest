@@ -11,20 +11,26 @@
 
 <body>
 
-  <div id="container">
+  <div class="container canvasContainer">
     <canvas id="gameCanvas" width="460" height="240" moz-opaque></canvas>
-    <div id="overlay">
-      A long time ago....<br />
-      Tech-demo 1: Single Droid, synchronized scripting
-      <br />
-    
-    </div>
   </div>
+
+  <div id="overlayContainer2" class="container canvasContainer">
+    <div id="overlayContainer" class="overlayContainer"></div>
+  </div>
+
+  <!-- engine stuff -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.1.1/math.min.js"></script>
   <script src="js/engine/EventDispatcher.js"></script>
+  <script src="js/engine/Walkbox.js"></script>
   <script src="js/engine/Engine.js"></script>
   <script src="js/engine/Room.js"></script>
   <script src="js/engine/Prop.js"></script>
+  <script src="js/engine/Text.js"></script>
+  <script src="js/engine/Button.js"></script>
   <script src="js/engine/MovingActor.js"></script>
+
+  <!-- game stuff -->
   <script src="js/game/demo-1.js"></script>
 </body>
 </body>
