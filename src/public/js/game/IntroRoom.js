@@ -3,7 +3,10 @@ class IntroRoom extends Room {
 	init() {	
 		super.init();
 
-		// chaining method syntax!
+		this.intro = new Text("A long time ago<br />in a galaxy far, far away...")
+			.setPosition({ x: 140, y: 100 })
+			.addClassName('blue');
+
 		this.logo = new MovingActor('./resources/logo.png', false)
 			.setOrigin({ x: -(135 + 1) / 2, y: -64 })
 			.setDimensions({ width: 135, height: 64 });
@@ -14,15 +17,15 @@ class IntroRoom extends Room {
 		
 		var _this = this;
 
+		this.startButton = new Button("Start!")
+			.setPosition({ x: 200, y: 160 });
+
 		this.footer = new Text('A classic point and click adventure by <a href="https://twitter.com/wmenge" target="_blank">@wmenge</a>')
-			.setPosition({ x: 10, y: 110 })
+			.setPosition({ x: 10, y: 220 })
 			.setDimensions({ width: 440, height: 1 })
 			.addClassName('center')
 			.addClassName('small');
 			
-		this.startButton = new Button("Start!")
-			.setPosition({ x: 200, y: 80 });
-
 		this.startButton.onSelect(function() {
 
 			// hide logo and button
@@ -33,17 +36,17 @@ class IntroRoom extends Room {
 			_this.imagePanel.moveRelative({ x: -140, y: 0});
 
 			_this.heading = new Text("Help Prinses Leia!")
-				.setPosition({ x: 30, y: 20 })
+				.setPosition({ x: 30, y: 40 })
 				.setType('h1')
 				.show('fadeIn');
 
 			_this.text = new Text("De prinses heeft geheime plannen voor de rebellen! Vind de plannen en ontsnap uit het ruimteschip!")
-				.setPosition({ x: 30, y: 40 })
+				.setPosition({ x: 30, y: 80 })
 				.setDimensions({ width: 250, height: 30 })
 				.show('fadeIn');
 
 			_this.okButton = new Button("OK!")
-				.setPosition({ x: 110, y: 80 });
+				.setPosition({ x: 110, y: 160 });
 
 			_this.okButton.onSelect(function() {
 
@@ -70,10 +73,7 @@ class IntroRoom extends Room {
 		this.imagePanel.setPosition({ x: 460 + 130, y: 120 });
 		this.imagePanel.show();
 
-		this.intro = new Text("A long time ago<br />in a galaxy far, far away...")
-			.setPosition({ x: 140, y: 50 })
-			.addClassName('blue')
-			.show('fadeIn');
+		this.intro.show('fadeIn');
 
 		var _this = this;
 

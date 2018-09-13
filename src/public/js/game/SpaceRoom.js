@@ -5,11 +5,11 @@ class SpaceRoom extends Room {
 		super.enter();
 
 		this.text = new Text("Je bent ontsnapt!")
-			.setPosition({ x: 170, y: 40 })
+			.setPosition({ x: 170, y: 80 })
 			.show('fadeIn');
 
 		this.footer = new Text('Use the <a href="https://github.com/wmenge/droidquest" target="_blank">source</a> Luke!')
-			.setPosition({ x: 10, y: 110 })
+			.setPosition({ x: 10, y: 220 })
 			.setDimensions({ width: 440, height: 1 })
 			.addClassName('center')
 			.addClassName('small')
@@ -18,7 +18,7 @@ class SpaceRoom extends Room {
 		var _this = this;
 
 		this.button = new Button("Nog een keer!")
-			.setPosition({ x: 175, y: 60 })
+			.setPosition({ x: 175, y: 160 })
 			.onSelect(function() {
 				// Navigate to next room
 				var room = new IntroRoom("space");

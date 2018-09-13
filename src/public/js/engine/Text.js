@@ -53,7 +53,10 @@ class Text {
 		
 		// rough positioning
 		this.element.style.marginLeft = (this.position.x / 460 * 100) + "%";
-		this.element.style.marginTop = (this.position.y / 240 * 100) + "%";
+		// strange magic factor is needed on y-axis (probably a css issue)
+		this.element.style.marginTop = (this.position.y / (240 * 1.92) * 100) + "%";
+		console.log("top:" + this.element.style.marginTop);
+		console.log("left:" + this.element.style.marginLeft);
 
 		// rough sizing
 		if (this.dimensions) {

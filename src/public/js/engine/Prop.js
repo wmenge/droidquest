@@ -4,9 +4,11 @@ class Prop {
 	constructor(imageUrl) {
 
 		// refactor into sprite/spritesheet
-		this.image = new Image();
-		this.image.src = imageUrl;
-		
+		if (imageUrl) {
+			this.image = new Image();
+			this.image.src = imageUrl;
+		}
+
 		this.position = { x: 0, y: 0 };
 		this.origin = { x: 0, y: 0 };
 		this.dimensions = { width: 0, height: 0 };
@@ -41,12 +43,16 @@ class Prop {
 	// Sprite/sheet
 	draw(ctx) {
 
-		ctx.save();
+		if (this.image) {
 
-		ctx.translate(this.position.x, this.position.y);
-		ctx.drawImage(this.image, this.origin.x, this.origin.y);
+			ctx.save();
 
-		ctx.restore();
+			ctx.translate(this.position.x, this.position.y);
+			ctx.drawImage(this.image, this.origin.x, this.origin.y);
+
+			ctx.restore();
+
+		}
 
 	}
 

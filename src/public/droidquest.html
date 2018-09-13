@@ -11,14 +11,14 @@
 
 <body>
 
-  <div class="container canvasContainer">
+  <div class="flexContainer">
     <canvas id="gameCanvas" width="460" height="240" moz-opaque></canvas>
   </div>
 
-  <div id="overlayContainer2" class="container canvasContainer">
-    <div id="overlayContainer" class="overlayContainer"></div>
+  <div class="flexContainer" id="textContainer">
+    <div id="overlayContainer"></div>
   </div>
-
+  
   <!-- engine stuff -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.1.1/math.min.js"></script>
   <script src="js/engine/EventDispatcher.js"></script>
