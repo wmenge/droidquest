@@ -4,10 +4,6 @@ class SpaceRoom extends Room {
 		
 		super.enter();
 
-		// TEMP: needed to allow clicks to pass through to canvas
-		var overlayContainer = document.getElementById('overlayContainer2');
-		if (overlayContainer) overlayContainer.classList.remove('hidden');
-
 		this.text = new Text("Je bent ontsnapt!")
 			.setPosition({ x: 170, y: 40 })
 			.show('fadeIn');

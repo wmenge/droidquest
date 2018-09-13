@@ -105,14 +105,7 @@ class IntroRoom extends Room {
 		this.text.hide();
 		this.okButton.hide();
 		this.intro.hide();
-		//this.footer.hide();
 
-		// TEMP: needed to allow clicks to pass through to canvas
-		var overlayContainer = document.getElementById('overlayContainer2');
-		if (overlayContainer) overlayContainer.classList.add('hidden');
-
-
-		
 	}
 
 }

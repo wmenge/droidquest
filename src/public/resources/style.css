@@ -45,8 +45,11 @@ a:hover {
 }
 
 .small {
-  font: normal 1vw "C64 Pro Local", verdana, helvetica, sans-serif;
-  
+  font: normal 1vw "C64 Pro Local", verdana, helvetica, sans-serif; 
+}
+
+.outline {
+  text-shadow: 1px 1px 0 black, 0 0 10px #ffd700;
 }
 
 h1 {
@@ -90,8 +93,8 @@ button {
   left: 0;
 
   box-shadow: 0 0 10px #ffd700;
-  /*bottom: 0;
-  right: 0;*/
+  
+  pointer-events:auto;
 }
 
 button:hover {
@@ -109,6 +112,10 @@ button:hover {
    width: 100%;
    padding-top: 51%;
    position: relative; /* If you want text inside of it */
+}
+
+#overlayContainer2 {
+  pointer-events: none;
 }
 
 .textOverlay {

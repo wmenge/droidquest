@@ -8,10 +8,7 @@ var game = {
 		introRoom.init();
 		introRoom.enter();
 	
-		/*var overlayContainer = document.getElementById('overlayContainer2');
-		if (overlayContainer) overlayContainer.classList.add('hidden');
-
-		var corridorRoom = new CorridorRoom("corridor");
+		/*var corridorRoom = new CorridorRoom("corridor");
 		corridorRoom.init();
 		corridorRoom.enter();*/
 
