@@ -17,10 +17,10 @@ class TatooineRoom extends Room {
 		this.walkbox = new Walkbox([ { x: 0, y: 135 }, { x: 460, y: 135 }, { x: 460, y: 238 }, { x: 0, y: 238 } ])
 		this.walkbox.activate();
 
-		this.r2d2 = new MovingActor('r2d2')
+		this.r2d2 = new Actor('r2d2')
 			.setOrigin({ x: -36 / 2, y: -40 });
 
-		this.threecpo = new MovingActor('c3po')
+		this.threecpo = new Actor('c3po')
 			.setOrigin({ x: -44 / 2, y: -70 });
 
 		this.tower = new Prop('tower')

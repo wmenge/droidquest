@@ -20,7 +20,7 @@ class TatooineRoom extends Room {
 	init() {	
 		super.init();
 
-		this.mainActor = new MovingActor('r2d2')
+		this.mainActor = new Actor('r2d2')
 			.setOrigin({ x: -36 / 2, y: -40 });
 		
 		this.tower = new Prop('tower')

@@ -81,7 +81,7 @@ function addActor() {
 	var name = (actors.length % 2 == 0 ) ? 'r2d2' : 'c3po';
 	var origin = (actors.length % 2 == 0 ) ? { x: -36 / 2, y: -40 } : { x: -44 / 2, y: -70 };
 
-	var actor = new MovingActor(name)
+	var actor = new Actor(name)
 			.setOrigin(origin)
 			.setPosition(getRandomCoordinates())
 			.show();

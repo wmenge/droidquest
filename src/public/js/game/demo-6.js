@@ -23,7 +23,7 @@ class TatooineRoom extends Room {
 			{ x: 100, y: 200 } ]);
 		this.walkbox.activate();
 
-		this.mainActor = new MovingActor('r2d2');
+		this.mainActor = new Actor('r2d2');
 		//this.mainActor.dimensions = { width: 36, height: 45 };
 		this.mainActor.origin = { x: -36 / 2, y: -40 };
 

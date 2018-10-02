@@ -6,7 +6,7 @@ class CorridorRoom extends Room {
 		this.walkbox = new Walkbox([ { x: 0, y: 128 }, { x: 460, y: 128 }, { x: 460, y: 220 }, { x: 0, y: 220 } ])
 		this.walkbox.activate();
 
-		this.mainActor = new MovingActor('r2d2')
+		this.mainActor = new Actor('r2d2')
 			.setOrigin({ x: -36 / 2, y: -40 });
 
 		this.plans = new Prop('plans')
@@ -14,7 +14,7 @@ class CorridorRoom extends Room {
 
 		game.obtainedPlans = false;
 
-		this.door = new MovingActor('door')
+		this.door = new Actor('door')
 			.setVelocity(20)
 			.setPosition({x: 232, y: 41 });
 

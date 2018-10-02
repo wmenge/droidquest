@@ -7,10 +7,10 @@ class IntroRoom extends Room {
 			.setPosition({ x: 140, y: 100 })
 			.addClassName('blue');
 
-		this.logo = new MovingActor('logo', false)
+		this.logo = new Actor('logo', false)
 			.setOrigin({ x: -(135 + 1) / 2, y: -64 });
 			
-		this.imagePanel = new MovingActor('intro', false)
+		this.imagePanel = new Actor('intro', false)
 			.setOrigin({ x: -129, y: -180 / 2 });
 			
 		var _this = this;

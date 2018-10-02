@@ -1,4 +1,4 @@
-// Refactor Prop, MovingActor into Prop, Actor, Sprite, Spritesheet
+// Refactor Prop, Actor into Prop, Actor, Sprite, Spritesheet
 class Prop { 
 
 	constructor(sprite) {

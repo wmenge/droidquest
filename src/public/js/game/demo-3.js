@@ -20,16 +20,16 @@ class TatooineRoom extends Room {
 	init() {	
 		super.init();
 
-		this.mainActor = new MovingActor('r2d2')
+		this.mainActor = new Actor('r2d2')
 			.setOrigin({ x: -36 / 2, y: -40 });
 		
-		this.secondActor = new MovingActor('c3po')
+		this.secondActor = new Actor('c3po')
 			.setOrigin({ x: -44 / 2, y: -70 });
 
-		this.thirdActor = new MovingActor('r2d2')
+		this.thirdActor = new Actor('r2d2')
 			.setOrigin({ x: -36 / 2, y: -40 });
 
-		this.fourthActor = new MovingActor('c3po')
+		this.fourthActor = new Actor('c3po')
 			.setOrigin({ x: -44 / 2, y: -70 });
 		
 		this.tower = new Prop('tower')

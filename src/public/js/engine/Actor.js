@@ -1,4 +1,4 @@
-class MovingActor { 
+class Actor { 
 
 	constructor(sprite) {
 
@@ -132,7 +132,7 @@ class MovingActor {
     		newTarget = walkbox.correctedTarget(this.position, newTarget);
     	}
 
-    	console.log('MovingActor.moveTo: ', newTarget);
+    	console.log('Actor.moveTo: ', newTarget);
 
 		this.target = newTarget;
 
