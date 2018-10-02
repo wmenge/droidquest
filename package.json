@@ -1,0 +1,14 @@
+{
+  "name": "droidquest-static-server",
+  "version": "0.0.1",
+  "description": "A simple static node.js based web server for Droid Quest",
+  "main": "/src/static-server-app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
