@@ -18,8 +18,8 @@ class MovingActor {
 		
 		this.target = null;
 		this.velocity = 60; // pixels per second
-		this.orientation = "Front";
-		this.tag = this.orientation;
+		this.state = "Front";
+		this.tag = this.state;
 
 		// Actor/prop
 		this.zIndex = 0;
@@ -182,19 +182,19 @@ class MovingActor {
 		//if (this.isSpriteSheet) {
 		if (Math.abs(distance.y) > Math.abs(distance.x)) {
 			if (distance.y > 0) {
-				this.orientation = "Front"; // enumerations!
+				this.state = "Front"; // enumerations!
 			} else {
-				this.orientation = "Back";
+				this.state = "Back";
 			}
 		} else {
 			if (distance.x < 0) {
-				this.orientation = "Left";
+				this.state = "Left";
 			} else {
-				this.orientation = "Right";
+				this.state = "Right";
 			}
 		}
 
-		this.tag = this.orientation + "Walk";
+		this.tag = this.state + "Walk";
 
 		//}
 
@@ -295,7 +295,7 @@ class MovingActor {
 
 		if (this.target == null) {
 			return;
-			this.tag = this.orientation;
+			this.tag = this.state;
 		}
 
 		var dx = this.velocityComponents.x * delta / 1000;
@@ -330,7 +330,7 @@ class MovingActor {
 		}
 
 		if (!this.isMoving()) {
-			this.tag = this.orientation;
+			this.tag = this.state;
 			this.outsideResolve();
 		}
 	};
