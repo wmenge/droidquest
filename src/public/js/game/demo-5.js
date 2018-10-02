@@ -16,8 +16,6 @@ class DemoRoom extends Room {
 
 		super.enter();
 
-		engine.debugMode = true;
-
 		new Text("Tech demo 5: Text and buttons that can be positioned on 'pixels'")
 			.setPosition({ x: 10, y: 5 })
 			.setDimensions({ width: 320, height: 25 })
@@ -27,7 +25,7 @@ class DemoRoom extends Room {
 
 			new Prop()
 				.setPosition({ x: 230, y: 120 })
-				.setDimensions({ width: 10, height: 10 })
+				//.setDimensions({ width: 10, height: 10 })
 				//.setOrigin({ x: -5, y: -5 })
 				.show()
 
@@ -43,9 +41,16 @@ class DemoRoom extends Room {
 			// Canvas drawn prop to 'calibrate' the position of html text elements
 			new Prop()
 				.setPosition({ x: 60 + i * 30, y: 50 + i * 16 })
-				.setDimensions({ width: 36, height: 12 })
+				//.setDimensions({ width: 36, height: 12 })
 				.show()
 		}
+
+		this.debugButton = new Button("toggle debugger")
+			.setPosition({ x: 10, y: 220 })
+			.addClassName('small')
+			.addClassName('buttonOutline').onSelect(function() {
+				engine.debugMode = !engine.debugMode;
+			}).show();
 
 
 	}

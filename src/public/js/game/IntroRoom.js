@@ -7,22 +7,19 @@ class IntroRoom extends Room {
 			.setPosition({ x: 140, y: 100 })
 			.addClassName('blue');
 
-		this.logo = new MovingActor('./resources/logo.png', false)
-			.setOrigin({ x: -(135 + 1) / 2, y: -64 })
-			.setDimensions({ width: 135, height: 64 });
-		
-		this.imagePanel = new MovingActor('./resources/intro.png', false)
-			.setOrigin({ x: -129, y: -180 / 2 })
-			.setDimensions({ width: 129, height: 190 });
-		
+		this.logo = new MovingActor('logo', false)
+			.setOrigin({ x: -(135 + 1) / 2, y: -64 });
+			
+		this.imagePanel = new MovingActor('intro', false)
+			.setOrigin({ x: -129, y: -180 / 2 });
+			
 		var _this = this;
 
 		this.startButton = new Button("Start!")
 			.setPosition({ x: 200, y: 160 });
 
-		this.footer = new Text('A classic point and click adventure by <a href="https://twitter.com/wmenge" target="_blank">@wmenge</a>')
+		this.footer = new Text('A classic point and click adventure by <a href="https://twitter.com/wmenge" target="_blank">@wmenge</a><br><br><a href="demo-001.html">Click for Tech demos</a>')
 			.setPosition({ x: 10, y: 220 })
-			.setDimensions({ width: 440, height: 1 })
 			.addClassName('center')
 			.addClassName('small');
 			

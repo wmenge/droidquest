@@ -1,0 +1,104 @@
+{ "frames": [
+   {
+    "filename": "r2d2 0.ase",
+    "frame": { "x": 0, "y": 0, "w": 36, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 36, "h": 47 },
+    "sourceSize": { "w": 36, "h": 47 },
+    "duration": 250
+   },
+   {
+    "filename": "r2d2 1.ase",
+    "frame": { "x": 36, "y": 0, "w": 36, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 36, "h": 47 },
+    "sourceSize": { "w": 36, "h": 47 },
+    "duration": 250
+   },
+   {
+    "filename": "r2d2 2.ase",
+    "frame": { "x": 72, "y": 0, "w": 36, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 36, "h": 47 },
+    "sourceSize": { "w": 36, "h": 47 },
+    "duration": 250
+   },
+   {
+    "filename": "r2d2 3.ase",
+    "frame": { "x": 108, "y": 0, "w": 36, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 36, "h": 47 },
+    "sourceSize": { "w": 36, "h": 47 },
+    "duration": 250
+   },
+   {
+    "filename": "r2d2 4.ase",
+    "frame": { "x": 144, "y": 0, "w": 36, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 36, "h": 47 },
+    "sourceSize": { "w": 36, "h": 47 },
+    "duration": 250
+   },
+   {
+    "filename": "r2d2 5.ase",
+    "frame": { "x": 180, "y": 0, "w": 36, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 36, "h": 47 },
+    "sourceSize": { "w": 36, "h": 47 },
+    "duration": 250
+   },
+   {
+    "filename": "r2d2 6.ase",
+    "frame": { "x": 216, "y": 0, "w": 36, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 36, "h": 47 },
+    "sourceSize": { "w": 36, "h": 47 },
+    "duration": 250
+   },
+   {
+    "filename": "r2d2 7.ase",
+    "frame": { "x": 252, "y": 0, "w": 36, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 36, "h": 47 },
+    "sourceSize": { "w": 36, "h": 47 },
+    "duration": 250
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.1.12-dev",
+  "image": "/Users/wilcomenge/Documents/game-dev/art/r2d2/r2d2.png",
+  "format": "RGBA8888",
+  "size": { "w": 288, "h": 47 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "Front", "from": 0, "to": 0, "direction": "forward" },
+   { "name": "FrontWalk", "from": 0, "to": 1, "direction": "forward" },
+   { "name": "Back", "from": 2, "to": 2, "direction": "forward" },
+   { "name": "BackWalk", "from": 2, "to": 3, "direction": "forward" },
+   { "name": "Left", "from": 4, "to": 4, "direction": "forward" },
+   { "name": "LeftWalk", "from": 4, "to": 5, "direction": "forward" },
+   { "name": "RightWalk", "from": 6, "to": 7, "direction": "forward" },
+   { "name": "Right", "from": 6, "to": 6, "direction": "forward" }
+  ],
+  "layers": [
+   { "name": "Background", "opacity": 255, "blendMode": "normal" },
+   { "name": "Shadow", "opacity": 88, "blendMode": "normal" },
+   { "name": "Middle Leg", "opacity": 255, "blendMode": "normal" },
+   { "name": "Body", "opacity": 255, "blendMode": "normal" },
+   { "name": "Body Decals", "opacity": 255, "blendMode": "normal" },
+   { "name": "Left Leg", "opacity": 255, "blendMode": "normal" },
+   { "name": "Right Leg", "opacity": 255, "blendMode": "normal" },
+   { "name": "Head", "opacity": 255, "blendMode": "normal" },
+   { "name": "Eyes", "opacity": 255, "blendMode": "normal" }
+  ]
+ }
+}

@@ -1,26 +1,35 @@
 class MovingActor { 
 
-	constructor(imageUrl, isSpriteSheet = true) {
+	constructor(sprite) {
 
-		// refactor out into sprite/spritesheet classes
-		this.image = new Image();
-		this.image.src = imageUrl;
-		this.isSpriteSheet = isSpriteSheet;
-		
-		this.dimensions = { width: 0, height: 0 };
+		var _this = this;
+
+		if (sprite instanceof Sprite) {
+			this.sprite = sprite;
+		} else {
+			_this = this;
+			this.spritePromise = getSprite(sprite).then(function(spriteObj) {
+				_this.sprite = spriteObj;
+			});
+		}
 		
 		this.position = { x: 0, y: 0 };
 		this.origin = { x: 0, y: 0 };
 		
 		this.target = null;
 		this.velocity = 60; // pixels per second
-		this.orientation = 0;
+		this.orientation = "Front";
+		this.tag = this.orientation;
 
 		// Actor/prop
 		this.zIndex = 0;
 
-		// call back function
+		// call back functions
 		this.onTarget = null;
+		this.onMoveStart = null;
+		//this.onMoveEnd = null
+
+		this.shown = false;
 
 	}
 
@@ -34,11 +43,6 @@ class MovingActor {
 		return this;
 	}
 
-	setDimensions(dimensions) {
-		this.dimensions = dimensions;
-		return this;
-	}
-
 	setZIndex(zIndex) {
 		this.zIndex = zIndex;
 		return this;
@@ -49,13 +53,31 @@ class MovingActor {
 		return this;
 	}
 
-	// Actor
-	show() {
-		engine.drawables.push(this);
-		engine.movables.push(this);
+	isShown() {
+		return this.shown;
+		/*var index = engine.drawables.indexOf(this);
+		return (index > -1);*/
 	}
 
-	// Actor
+	// clean up
+	show() {
+		// wait until sprite has been loaded
+		//if (this.sprite) {
+		//	engine.drawables.push(this);
+		//	engine.movables.push(this);
+		//} else {
+			var _this = this;
+			this.spritePromise.then(function(result) {
+				engine.drawables.push(_this);
+				engine.movables.push(_this);
+			});
+		//x}
+
+		this.shown = true;
+
+		return this;
+	}
+
 	hide() {
 
 		var index = engine.drawables.indexOf(this);
@@ -69,6 +91,10 @@ class MovingActor {
 		if (index > -1) {
   			engine.movables.splice(index, 1);
 		}
+
+		this.shown = false;
+
+		return this;
 	}
 	
 	// Actor
@@ -101,6 +127,7 @@ class MovingActor {
 
     	// Check if the new target is within the walkbox
     	if (walkbox && !walkbox.contains(newTarget)) {
+    		//return null;
     		// Correct the target so that it lies on the edge of the walkbox
     		newTarget = walkbox.correctedTarget(this.position, newTarget);
     	}
@@ -152,23 +179,24 @@ class MovingActor {
 		};
 
 		//determine orientation (try to do by simple formula)
-		if (this.isSpriteSheet) {
-
-			if (Math.abs(distance.y) > Math.abs(distance.x)) {
-				if (distance.y > 0) {
-					this.orientation = 0;
-				} else {
-					this.orientation = 1;
-				}
+		//if (this.isSpriteSheet) {
+		if (Math.abs(distance.y) > Math.abs(distance.x)) {
+			if (distance.y > 0) {
+				this.orientation = "Front"; // enumerations!
 			} else {
-				if (distance.x < 0) {
-					this.orientation = 2;
-				} else {
-					this.orientation = 3;
-				}
+				this.orientation = "Back";
 			}
-
+		} else {
+			if (distance.x < 0) {
+				this.orientation = "Left";
+			} else {
+				this.orientation = "Right";
+			}
 		}
+
+		this.tag = this.orientation + "Walk";
+
+		//}
 
 		// Setup promise so that the caller can wait until
 		// the move has finished (causing the promise to be fullfilled)
@@ -183,43 +211,33 @@ class MovingActor {
 
 		this.outsideResolve = outsideResolve;
 
+		if (this.onMoveStart) {
+			this.onMoveStart(this.target);
+		}
+
 		return promise;
 	}
 
 	// SpriteSheet
-	draw(ctx) {
+	draw(ctx, timestamp) {
 
-		ctx.save();
+		this.sprite.draw(ctx, this.position.x + this.origin.x, this.position.y + this.origin.y, this.tag, timestamp);
 
-		 //context.save();
-
-             /*   ctx.textBaseline = "top";
-                ctx.fillStyle = this._textColor || "rgb(0,0,0)";
-                ctx.font = "10px sans-serif";
-                ctx.textAlign = this._textAlign;
-
-                ctx.fillText("Hello", 10.5, 10.5);
-*/
-                //context.restore();
-
-		ctx.translate(this.position.x, this.position.y)
-
-		// image can be a sprite sheet with images for the 4 directions.
-		ctx.drawImage(this.image, this.dimensions.width * this.orientation, 0, this.dimensions.width, this.dimensions.height, this.origin.x, this.origin.y, this.dimensions.width, this.dimensions.height);
-
-		ctx.restore();
 	}
 
 	// Actor
 	box() {
+
+		var dimensions = this.sprite.getDimensions();
+
 		return [ 
 			{ 
 				x: this.position.x + this.origin.x,
 				y: this.position.y + this.origin.y
 			},
 			{ 
-				x: this.position.x + this.origin.x + this.dimensions.width,
-				y: this.position.y + this.origin.y + this.dimensions.height
+				x: this.position.x + this.origin.x + dimensions.width,
+				y: this.position.y + this.origin.y + dimensions.height
 			}
 
 		]
@@ -245,17 +263,19 @@ class MovingActor {
 		// Makes sure that lines and sprites align nicely to the middle of pixels
 		// (otherwise lines become blurred between 2 lines/rows)
 		ctx.translate(.5, .5);
+
+		var dimensions = this.sprite.getDimensions();
 	
 		// old position
 		if (this.oldPosition) {
-			ctx.strokeRect(this.oldPosition.x + this.origin.x, this.oldPosition.y + this.origin.y, this.dimensions.width, this.dimensions.height);
+			ctx.strokeRect(this.oldPosition.x + this.origin.x, this.oldPosition.y + this.origin.y, dimensions.width, dimensions.height);
 		} else {
-			ctx.strokeRect(this.position.x + this.origin.x, this.position.y + this.origin.y, this.dimensions.width, this.dimensions.height);	
+			ctx.strokeRect(this.position.x + this.origin.x, this.position.y + this.origin.y, dimensions.width, dimensions.height);	
 		}
 
 		// target
 		if (this.target) {
-			ctx.strokeRect(this.target.x + this.origin.x, this.target.y + this.origin.y, this.dimensions.width, this.dimensions.height);
+			ctx.strokeRect(this.target.x + this.origin.x, this.target.y + this.origin.y, dimensions.width, dimensions.height);
 		}
 
 		// line to target
@@ -273,7 +293,10 @@ class MovingActor {
 	// Actor
 	update(delta) {
 
-		if (this.target == null) return;
+		if (this.target == null) {
+			return;
+			this.tag = this.orientation;
+		}
 
 		var dx = this.velocityComponents.x * delta / 1000;
 		var dy = this.velocityComponents.y * delta / 1000;
@@ -306,10 +329,8 @@ class MovingActor {
 			}
 		}
 
-		//this.position.x = Math.floor(this.position.x);
-		//this.position.y = Math.floor(this.position.y);
-
 		if (!this.isMoving()) {
+			this.tag = this.orientation;
 			this.outsideResolve();
 		}
 	};

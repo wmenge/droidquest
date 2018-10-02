@@ -20,13 +20,11 @@ class TatooineRoom extends Room {
 	init() {	
 		super.init();
 
-		this.mainActor = new MovingActor('./resources/r2d2-sheet.png');
-		this.mainActor.dimensions = { width: 36, height: 45 };
-		this.mainActor.origin = { x: -36 / 2, y: -40 };
+		this.mainActor = new MovingActor('r2d2')
+			.setOrigin({ x: -36 / 2, y: -40 });
 		
-		this.tower = new Prop('./resources/tower.png')
+		this.tower = new Prop('tower')
 			.setOrigin({ x: -58 / 2, y: -161 })
-			.setDimensions({ width: 58, height: 161 })
 			.setPosition({x: 430, y: 176 });
 	}
 
@@ -34,9 +32,8 @@ class TatooineRoom extends Room {
 
 		super.enter();
 
-		engine.debugMode = true;
-
-		this.mainActor.position = { x: 80, y: 160};
+		this.mainActor.position = { x: 190, y: 160};
+		this.mainActor.speed = 90;
 		this.mainActor.show();
 
 		this.tower.show();
@@ -46,6 +43,13 @@ class TatooineRoom extends Room {
 			.addClassName('small')
 			.addClassName('outline')
 			.show();
+
+		this.debugButton = new Button("toggle debugger")
+			.setPosition({ x: 10, y: 220 })
+			.addClassName('small')
+			.addClassName('buttonOutline').onSelect(function() {
+				engine.debugMode = !engine.debugMode;
+			}).show();
 
 		/* 
 			Scripting moves
@@ -76,10 +80,20 @@ class TatooineRoom extends Room {
 				
 				// syncrhonous script, each step is only executed
 				// after the previous step has completely finished
-			    await actor.moveRelative({ x: 0, y: 60});
+
+			    await actor.moveRelative({ x: 120, y: 0});
+			    await actor.wait(250);
+
+			    /*await actor.moveRelative({ x: 0, y: 60});
 			    await actor.wait(750);
-			    await actor.moveRelative({ x: 0, y: -60});
-			    await actor.wait(750);
+
+			    await actor.moveRelative({ x: -300, y: 0});
+			    await actor.wait(750);*/
+
+			    await actor.moveRelative({ x: -120, y: 0});
+			    await actor.wait(250);
+
+
 
 			}
 

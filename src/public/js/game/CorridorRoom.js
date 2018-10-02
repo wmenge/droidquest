@@ -6,23 +6,19 @@ class CorridorRoom extends Room {
 		this.walkbox = new Walkbox([ { x: 0, y: 128 }, { x: 460, y: 128 }, { x: 460, y: 220 }, { x: 0, y: 220 } ])
 		this.walkbox.activate();
 
-		this.mainActor = new MovingActor('./resources/r2d2-sheet.png')
-			.setDimensions({ width: 36, height: 45 })
+		this.mainActor = new MovingActor('r2d2')
 			.setOrigin({ x: -36 / 2, y: -40 });
 
-		this.plans = new Prop('./resources/plans.png')
-			.setDimensions({ width: 18, height: 18 })
+		this.plans = new Prop('plans')
 			.setPosition({x: 360, y: 180 })
 
 		game.obtainedPlans = false;
 
-		this.door = new MovingActor('./resources/door.png', false)
-			.setDimensions({ width: 49, height: 79 })
+		this.door = new MovingActor('door')
 			.setVelocity(20)
 			.setPosition({x: 232, y: 41 });
 
-		this.doorPanel = new Prop('./resources/door-hide-panel.png')
-			.setDimensions({ width: 56, height: 79 })
+		this.doorPanel = new Prop('door-hide-panel')
 			.setPosition({x: 183, y: 41 })
 
 		this.door.open = function() {

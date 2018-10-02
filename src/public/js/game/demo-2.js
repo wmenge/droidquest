@@ -1,94 +1,101 @@
 var game = {
 	init: function() {
 
-		tatooineRoom = new TatooineRoom("tatooine");
-
-		tatooineRoom.walkbox = {
-				a: { x: 0, y: 0},
-				b: { x: 460, y: 240}
-		};
-
-		tatooineRoom.init();
-		tatooineRoom.enter();
+		var room = new DemoRoom("tatooine");
+		room.init();
+		room.enter();
 		
 		requestAnimationFrame(mainLoop);
 	}
 }
 
-class TatooineRoom extends Room {
+class DemoRoom extends Room {
 
 	enter() {
 
 		super.enter();
 
-		engine.debugMode = true;
-
-		this.tower = new Prop('./resources/tower.png')
-			.setOrigin({ x: -58 / 2, y: -161 })
-			.setDimensions({ width: 58, height: 161 })
-			.setPosition({x: 430, y: 176 });
-
-		this.tower.show();
-
-		this.text = new Text("Tech demo 2: Army of droids, syncrhonized scripting")
+		this.text = new Text("Tech demo 2: Army of droids, syncrhonized scripting. Use the buttons to add or remove droids!")
 			.setPosition({ x: 10, y: 5 })
 			.addClassName('small')
 			.addClassName('outline')
 			.show();
 
-		/* 
-			Scripting moves
-			---------------
-
-		    The functions of an actor that perform a function
-	        that takes time (such as waiting or moving) return a promise
-		    This allows the caller to wait (await keyword) to wait until
-		    the action finishes. 
-
-		    this allows for easy scriptable code such as:
+		this.removeButton = new Button("-")
+			.setPosition({ x: 10, y: 20 })
+			.addClassName('small')
+			.addClassName('buttonOutline');
 		
-		    await this.mainActor.moveTo({ x: 80, y: 160});
-		   	await this.mainActor.wait(500);
-		    await this.mainActor.moveTo({ x: 80, y: 80});
+		this.removeButton.selectHandler = removeActor;
+		this.removeButton.show();
 
-		    TODO: Can also be written using .then() syntax, check this
-		*/
+		this.addButton = new Button("+")
+			.setPosition({ x: 29, y: 20 })
+			.addClassName('small')
+			.addClassName('buttonOutline');
 
-		//this.actors = [];
+		this.addButton.selectHandler = addActor;
+		this.addButton.show();
 
-		// Probably not the most efficient way to move lots of actors, but it
-		// drives home the point of controlling synchronisity:
-		// x 'threads' running simultaneously, each controlling an actor
-		// in a synchronous manner: 
+		this.debugButton = new Button("toggle debugger")
+			.setPosition({ x: 10, y: 220 })
+			.addClassName('small')
+			.addClassName('buttonOutline').onSelect(function() {
+				engine.debugMode = !engine.debugMode;
+			}).show();
+		
+		this.tower = new Prop('tower')
+			.setOrigin({ x: -58 / 2, y: -161 })
+			.setPosition({x: 430, y: 176 });
 
-		// Any code that wants to be able to wait on promises
-		// must not run on the UI thread but must be started in 
-		// a background process (async keyword)	
-		var moveRandomly = async function(actor) {
-			while (true) {
-				await actor.moveTo(getRandomCoordinates());
-			}
-		}
+		this.tower.show();
 
-		// Create some actores moving randomly
 		for (var i = 0; i < 10; i++) {
-
-			var actor = new MovingActor('./resources/r2d2-sheet.png');
-			actor.dimensions = { width: 36, height: 45 };
-			actor.origin = { x: -36 / 2, y: -40 };
-			actor.position = getRandomCoordinates();
-			actor.show();
-
-			moveRandomly(actor);
+			addActor();
 		}
 	}
 
 }
 
+var actors = [];
+
+async function moveRandomly (actor) {
+	while (actor.isShown()) {
+		await actor.moveTo(getRandomCoordinates());
+	}
+}
+
+function removeActor() {
+
+	if (actors.length == 0) return;
+
+	var actor = actors[0];
+
+	actor.hide();
+
+	engine.drawables.splice(0, 1);
+}
+
+function addActor() {
+
+	var name = (actors.length % 2 == 0 ) ? 'r2d2' : 'c3po';
+	var origin = (actors.length % 2 == 0 ) ? { x: -36 / 2, y: -40 } : { x: -44 / 2, y: -70 };
+
+	var actor = new MovingActor(name)
+			.setOrigin(origin)
+			.setPosition(getRandomCoordinates())
+			.show();
+
+	actors.push(actor);
+
+	moveRandomly(actor);
+
+}
+
 function getRandomCoordinates() {
 	return { 
-		x: Math.floor(Math.random() * tatooineRoom.walkbox.b.x),
-		y: Math.floor(Math.random() * tatooineRoom.walkbox.b.y)
+		x: Math.floor(Math.random() * 460),
+		y: Math.floor(Math.random() * 240)
 	};
 }
 

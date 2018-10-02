@@ -14,6 +14,8 @@ html, body {
   cursor: crosshair;
 
   text-shadow: 0 0 10px #ffd700;
+
+  overflow:hidden;
 }
 
 a, a:visited {
@@ -48,7 +50,11 @@ a:hover {
 }
 
 .outline {
-  text-shadow: 1px 1px 0 black, 0 0 10px #ffd700;
+  text-shadow: .125vw .125vw 0 black, 0 0 10px rgba(255,0,0,.0125);
+}
+
+.buttonOutline, a.buttonOutline  {
+  box-shadow: .125vw .125vw 0 black, 0 0 10px rgba(255,0,0,.0125);
 }
 
 h1 {
@@ -95,7 +101,33 @@ button {
   pointer-events:auto;
 }
 
-button:hover {
+button, .button, .button:visited {
+  background-color: #ffd700;
+  color: black;
+  border: none;
+  padding: .75vw 1.5vw;
+  
+  cursor: crosshair;
+
+  text-shadow: none;
+  text-decoration: none;
+
+  box-shadow: 0 0 10px #ffd700;
+  
+  pointer-events:auto;
+}
+
+button {
+  font: normal 1.75vw "C64 Pro Local", verdana, helvetica, sans-serif;
+  
+  margin-top: 5vw;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+button:hover, .button:hover {
   background-color: #ffff66;
   box-shadow: 0 0 30px #ffd700;
   color: #440000;
@@ -189,17 +221,17 @@ canvas {
 }
 
 .tatooine {
-  background-image: url('../resources/tatooine.png');
+  background-image: url('../resources/rooms/tatooine.png');
   background-size: 100%;
 }
 
 .space {
-  background-image: url('../resources/space.png');
+  background-image: url('../resources/rooms/space.png');
   background-size: 50%;
 }
 
 .corridor {
-  background-image: url('../resources/corridor.png');
+  background-image: url('../resources/rooms/corridor.png');
   background-size: 100%;
   background-repeat: no-repeat;
 }

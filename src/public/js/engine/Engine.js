@@ -8,7 +8,7 @@ class Engine extends mix(Object).with(EventDispatcher) {
 
 		super();
 
-		this.canvas = canvas,
+		this.canvas = canvas;
 		
 		this.ctx = this.canvas.getContext('2d');
 		this.ctx.mozImageSmoothingEnabled = false;
@@ -26,7 +26,7 @@ class Engine extends mix(Object).with(EventDispatcher) {
 
 		this.debugMode = false;
 		this.lastFrameTimeMs = 0;
-		this.maxFPS = 120;
+		this.maxFPS = 144;
 
 		// on change, modify cursor (through setter)
 		this.enableInput = true;
@@ -79,11 +79,11 @@ class Engine extends mix(Object).with(EventDispatcher) {
 	    var delta = timestamp - this.lastFrameTimeMs; // get the delta time since last frame
 	    this.lastFrameTimeMs = timestamp;
 
-	    var ctx = this.ctx;
+	    this.ctx;
 
-		ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // clear canvas
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // clear canvas
 
-		ctx.save();
+		this.ctx.save();
 
 		this.zsort();
 
@@ -94,22 +94,22 @@ class Engine extends mix(Object).with(EventDispatcher) {
 	    }
 
 		for (var i in this.drawables) {
-			this.drawables[i].draw(ctx);
+			this.drawables[i].draw(this.ctx, timestamp);
 	    }
 
 	    if (this.debugMode) {
 
 			for (var i in this.drawables) {
-				this.drawables[i].debug(ctx);
+				this.drawables[i].debug(this.ctx);
 		    }
 
 		    for (var i in this.debuggables) {
-				this.debuggables[i].debug(ctx);
+				this.debuggables[i].debug(this.ctx);
 		    }	    	
 
 		}
 
-		ctx.restore();
+		this.ctx.restore();
 
 		// only request a new frame when an update is needed
         //if (this.updateNeeded) {
@@ -181,6 +181,8 @@ function onMouseClick(event) {
 	// check if a drawable is been targeted and has registered event handlers
 	// if such an object can be found, let it handle the event
 	// if none can be found, let the engine handle the event
+
+	// TODO: Supply event with coordinates and target
 	targetedObject = engine.getTargetedMovable(target);
 	if (targetedObject && targetedObject.onTarget) {
 		targetedObject.onTarget();

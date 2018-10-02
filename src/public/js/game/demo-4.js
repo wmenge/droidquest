@@ -17,19 +17,46 @@ class TatooineRoom extends Room {
 		this.walkbox = new Walkbox([ { x: 0, y: 135 }, { x: 460, y: 135 }, { x: 460, y: 238 }, { x: 0, y: 238 } ])
 		this.walkbox.activate();
 
-		this.mainActor = new MovingActor('./resources/r2d2-sheet.png');
-		this.mainActor.dimensions = { width: 36, height: 45 };
-		this.mainActor.origin = { x: -36 / 2, y: -40 };
+		this.r2d2 = new MovingActor('r2d2')
+			.setOrigin({ x: -36 / 2, y: -40 });
 
-		this.tower = new Prop('./resources/tower.png')
+		this.threecpo = new MovingActor('c3po')
+			.setOrigin({ x: -44 / 2, y: -70 });
+
+		this.tower = new Prop('tower')
 			.setOrigin({ x: -58 / 2, y: -161 })
-			.setDimensions({ width: 58, height: 161 })
 			.setPosition({x: 430, y: 176 });
-		
+
 		var _this = this;
 
+		// Clicking droid makes droid the main actor
+		this.r2d2.onTarget = function() {
+			_this.mainActor = _this.r2d2;
+			_this.threecpo.onMoveStart = null;
+			_this.r2d2.onMoveStart = function(target) {
+				setTimeout(async function() { 
+					await _this.threecpo.moveTo({ x: target.x - 20, y: target.y - 20 });
+					_this.threecpo.orientation = _this.r2d2.orientation;
+				 }, 750);
+
+			};
+		};
+
+		this.threecpo.onTarget = function() {
+			_this.mainActor = _this.threecpo;
+			_this.r2d2.onMoveStart = null;
+			_this.threecpo.onMoveStart = function(target) {
+				setTimeout(async function() { 
+					await _this.r2d2.moveTo({ x: target.x - 20, y: target.y - 20 });
+					_this.r2d2.orientation = _this.threecpo.orientation;
+				 }, 750);
+
+			};
+
+		};
+
 		engine.onTarget = function(event) {
-			game.tatooineRoom.mainActor.moveTo(event.detail, _this.walkbox);
+			_this.mainActor.moveTo(event.detail, _this.walkbox);
 		};
 	}
 
@@ -37,18 +64,27 @@ class TatooineRoom extends Room {
 
 		super.enter();
 
-		engine.debugMode = true;
+		this.r2d2.setPosition({ x: 115, y: 180})
+		         .show();
 
-		this.mainActor.position = { x: 230, y: 180};
-		this.mainActor.show();
+		this.threecpo.setPosition({ x: 345, y: 180})
+		         .show();
 
 		this.tower.show();
 
-		this.text = new Text("Tech demo 4: User controllable droid, with simple walkbox (click to move droid)")
+		this.text = new Text("Tech demo 4: Follow the leader (first, click to select a droid to be the leader; then click to move him)")
 			.setPosition({ x: 10, y: 5 })
 			.addClassName('small')
 			.addClassName('outline')
 			.show();
+
+		this.debugButton = new Button("toggle debugger")
+			.setPosition({ x: 10, y: 220 })
+			.addClassName('small')
+			.addClassName('buttonOutline').onSelect(function() {
+				engine.debugMode = !engine.debugMode;
+			}).show();
+
 
 
 	}
