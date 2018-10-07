@@ -7,7 +7,7 @@ class IntroRoom extends Room {
 			.setPosition({ x: 140, y: 100 })
 			.addClassName('blue');
 
-		this.logo = new Actor('logo', false)
+		this.logo = new Actor('logo')
 			.setOrigin({ x: -(135 + 1) / 2, y: -64 });
 			
 		this.imagePanel = new Actor('intro', false)
@@ -64,7 +64,7 @@ class IntroRoom extends Room {
 		super.enter();
 
 		// initial positions of logo and image panel (outside of view)
-		this.logo.setPosition({ x: (460 / 2) , y: 0 - 64 });
+		this.logo.setPosition({ x: (460 / 2) , y: -64 });
 		this.logo.show();
 
 		this.imagePanel.setPosition({ x: 460 + 130, y: 120 });
