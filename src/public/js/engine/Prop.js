@@ -1,4 +1,3 @@
-// Refactor Prop, Actor into Prop, Actor, Sprite, Spritesheet
 class Prop { 
 
 	constructor(sprite) {
@@ -18,11 +17,14 @@ class Prop {
 		this.position = { x: 0, y: 0 };
 		this.origin = { x: 0, y: 0 };
 		
-		// Actor/prop
 		this.zIndex = 0;
 
 		// call back function
 		this.onTarget = null;
+
+		this.scaleFactor = 1;
+
+		this.shown = false;
 
 		console.debug('Create', this.name, 'at', this.position);
 	}
@@ -46,11 +48,17 @@ class Prop {
 		return this;
 	}
 
-	// Sprite/sheet (remove from prop and handle in engine?)
-	// should engine.dwarables be only filled with sprites?
-	draw(ctx, timestamp, scaleFactor) {
+	setScaleFactor(scaleFactor) {
+		this.scaleFactor = scaleFactor;
+		return this;
+	}
 
-		this.sprite.draw(ctx, (this.position.x + this.origin.x) * scaleFactor.x, (this.position.y + this.origin.y) * scaleFactor.y, this.orientation, 0, scaleFactor);
+	draw(ctx, timestamp, engineScaleFactor) {
+
+		// performance: prevent object creation
+		var spriteScale = { x: engineScaleFactor.x * this.scaleFactor, y: engineScaleFactor.y * this.scaleFactor };
+
+		this.sprite.draw(ctx, (this.position.x + this.origin.x * this.scaleFactor) * engineScaleFactor.x, (this.position.y + this.origin.y * this.scaleFactor) * engineScaleFactor.y, this.tag, timestamp, spriteScale);
 
 	}
 
@@ -85,53 +93,40 @@ class Prop {
 
 	debug(ctx, scaleFactor) {
 
-		// Makes sure that lines and sprites align nicely to the middle of pixels
-		// (otherwise lines become blurred between 2 lines/rows)
-		//ctx.translate(.5, .5);
-
 		var dimensions = this.sprite.getDimensions();
 
-		// old position
 		ctx.strokeRect(
 			(this.position.x + this.origin.x) * scaleFactor.x, 
 			(this.position.y + this.origin.y) * scaleFactor.y, 
 			dimensions.width * scaleFactor.x, 
 			dimensions.height * scaleFactor.y);
 
-		//ctx.restore();
-		
 	}
 
 	isShown() {
-		var index = engine.drawables.indexOf(this);
-		return (index > -1);
+		return this.shown = true;
 	}
 
-	// Prop
-	show() {
-		// wait until sprite has been loaded
-		if (this.sprite) {
-			engine.drawables.push(this);
-		//	engine.movables.push(this);
-		} else {
-			var _this = this;
-			this.spritePromise.then(function(result) {
-				_this.show();
-			});
-		}
 
+	show() {
+		var _this = this;
+		this.spritePromise.then(function(result) {
+			engine.drawables.push(_this);
+		});
+
+		this.shown = true;
 
 		console.debug('Show', this.name, 'at', this.position);
+
+		return this;
 	}
 
-	// Prop
 	hide() {
 		var index = engine.drawables.indexOf(this);
 		
 		if (index > -1) {
   			engine.drawables.splice(index, 1);
 		}
-
 
 		console.debug('hide', this.name);
 	}

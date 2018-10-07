@@ -1,63 +1,17 @@
-class Actor { 
+class Actor extends Prop { 
 
 	constructor(sprite) {
 
-		var _this = this;
-
-		if (sprite instanceof Sprite) {
-			this.sprite = sprite;
-			this.name = 'actor';
-		} else {
-			this.name = sprite;
-
-			_this = this;
-
-			this.spritePromise = getSprite(sprite).then(function(spriteObj) {
-				_this.sprite = spriteObj;
-			});
-		}
-		
-		this.position = { x: 0, y: 0 };
-		this.origin = { x: 0, y: 0 };
+		super(sprite);
 		
 		this.target = null;
 		this.velocity = 60; // pixels per second
 		this.state = "Front";
 		this.tag = this.state;
 
-		// Actor/prop
-		this.zIndex = 0;
-
 		// call back functions
 		this.onTarget = null;
 		this.onMoveStart = null;
-		//this.onMoveEnd = null
-
-		this.shown = false;
-
-		// scalefactor of sprite, set to 2 for jumbo!
-		this.scaleFactor = 1;
-
-		console.debug('Create', this.name, 'at', this.position);
-	}
-
-	setName(name) {
-		this.name = name;
-	}
-
-	setPosition(position) {
-		this.position = position;
-		return this;
-	}
-
-	setOrigin(origin) {
-		this.origin = origin;
-		return this;
-	}
-
-	setZIndex(zIndex) {
-		this.zIndex = zIndex;
-		return this;
 	}
 
 	setVelocity(velocity) {
@@ -70,42 +24,23 @@ class Actor {
 		return this;
 	}
 
-	isShown() {
-		return this.shown;
-		/*var index = engine.drawables.indexOf(this);
-		return (index > -1);*/
-	}
-
-	// clean up
 	show() {
-		// wait until sprite has been loaded
-		//if (this.sprite) {
-		//	engine.drawables.push(this);
-		//	engine.movables.push(this);
-		//} else {
-			var _this = this;
-			this.spritePromise.then(function(result) {
-				engine.drawables.push(_this);
-				engine.movables.push(_this);
-			});
-		//x}
 
-		this.shown = true;
+		super.show();
 
-		console.debug('Show', this.name, 'at', this.position);
+		var _this = this;
+		this.spritePromise.then(function(result) {
+			engine.movables.push(_this);
+		});
 
 		return this;
 	}
 
 	hide() {
 
-		var index = engine.drawables.indexOf(this);
-		
-		if (index > -1) {
-  			engine.drawables.splice(index, 1);
-		}
+		super.hide();
 
-		index = engine.movables.indexOf(this);
+		var index = engine.movables.indexOf(this);
 		
 		if (index > -1) {
   			engine.movables.splice(index, 1);
@@ -118,7 +53,6 @@ class Actor {
 		return this;
 	}
 	
-	// Actor
 	wait(timeout) {
 
 	  console.debug(this.name, 'waits for', timeout, 'ms');
@@ -130,7 +64,6 @@ class Actor {
 	  return promise;
 	}
 
-	// Actor
 	moveRelative(relativeTarget) {
 		return this.moveTo(
 			{ x: this.position.x + relativeTarget.x, 
@@ -138,7 +71,6 @@ class Actor {
 			});
 	}
 
-	// Actor
 	moveTo(newTarget, walkbox) {
 
 		// If no obbject is currently moving, the engine isn't requesting frames,
@@ -239,57 +171,10 @@ class Actor {
 		return promise;
 	}
 
-	// SpriteSheet
-	draw(ctx, timestamp, engineScaleFactor) {
-
-		// performance: prevent object creation
-		var spriteScale = { x: engineScaleFactor.x * this.scaleFactor, y: engineScaleFactor.y * this.scaleFactor };
-
-		this.sprite.draw(ctx, (this.position.x + this.origin.x * this.scaleFactor) * engineScaleFactor.x, (this.position.y + this.origin.y * this.scaleFactor) * engineScaleFactor.y, this.tag, timestamp, spriteScale);
-
-	}
-
-	// Actor
-	box() {
-
-		var dimensions = this.sprite.getDimensions();
-
-		return [ 
-			{ 
-				x: this.position.x + this.origin.x,
-				y: this.position.y + this.origin.y
-			},
-			{ 
-				x: this.position.x + this.origin.x + dimensions.width,
-				y: this.position.y + this.origin.y + dimensions.height
-			}
-
-		]
-	}
-
-	// Actor
-	isInBox(point) {
-
-		var box = this.box();
-
-		return (point.x >= box[0].x && 
-		        point.x <= box[1].x &&
-		        point.y >= box[0].y && 
-		        point.y <= box[1].y);
-		
-	}
-
-	// Sprite
 	debug(ctx, engineScaleFactor) {
 
 		// performance: prevent object creation
 		var scaleFactor = { x: engineScaleFactor.x * this.scaleFactor, y: engineScaleFactor.y * this.scaleFactor };
-
-		//ctx.save();
-
-		// Makes sure that lines and sprites align nicely to the middle of pixels
-		// (otherwise lines become blurred between 2 lines/rows)
-		//ctx.translate(.5, .5);
 
 		var dimensions = this.sprite.getDimensions();
 	
@@ -313,11 +198,8 @@ class Actor {
 			ctx.stroke();
 		}
 
-		//ctx.restore();
-
 	}
 		
-	// Actor
 	update(delta) {
 
 		if (this.target == null) {
@@ -366,7 +248,6 @@ class Actor {
 		}
 	};
 
-	// Actor
 	isMoving() {
 		if (this.target == null) return false;
 		return (this.position.x != this.target.x) || (this.position.y != this.target.y);
