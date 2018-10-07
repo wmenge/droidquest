@@ -23,9 +23,9 @@ class TatooineRoom extends Room {
 			{ x: 100, y: 200 } ]);
 		this.walkbox.activate();
 
-		this.mainActor = new Actor('r2d2');
-		//this.mainActor.dimensions = { width: 36, height: 45 };
-		this.mainActor.origin = { x: -36 / 2, y: -40 };
+		this.mainActor = new Actor('r2d2')
+			.setScaleFactor(2)
+			.setOrigin({ x: -36 / 2, y: -40 });
 
 		this.tower = new Prop('tower')
 			.setOrigin({ x: -58 / 2, y: -161 })

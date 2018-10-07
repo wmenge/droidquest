@@ -83,6 +83,7 @@ function addActor() {
 
 	var actor = new Actor(name)
 			.setOrigin(origin)
+			.setScaleFactor(Math.random() * 1.5 + .5)
 			.setPosition(getRandomCoordinates())
 			.show();
 

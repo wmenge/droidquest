@@ -21,6 +21,7 @@ class TatooineRoom extends Room {
 		super.init();
 
 		this.mainActor = new Actor('r2d2')
+			.setScaleFactor(2)
 			.setOrigin({ x: -36 / 2, y: -40 });
 		
 		this.secondActor = new Actor('c3po')
