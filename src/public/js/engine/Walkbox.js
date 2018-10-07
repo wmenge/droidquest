@@ -111,37 +111,15 @@ class Walkbox {
 		var lines = this.lines;
 		var intersections = [];
 
-		console.log('movement line:', origin, target);
-
 		for (var i in lines) {
 
 			var wbLine = lines[i];
 
 			var result = this.checkLineIntersection(origin.x, origin.y, target.x, target.y, wbLine.a.x, wbLine.a.y, wbLine.b.x, wbLine.b.y);
 
-			if (result.onLine1 && result.onLine2) return { x: result.x, y: result.y };
-
-			/*var intersection = math.intersect([wbLine.a.x, wbLine.a.y], [wbLine.b.x, wbLine.a.y], [origin.x, origin.y], [target.x, target.y]);
-
-			if (intersection) {
-
-				var newTarget = { x: intersection[0], y: intersection[1] };
-				intersections.push(newTarget);
-				console.log('Check line', wbLine);
-				console.log('Intersection', intersection);
-				console.log('Distance:', math.distance([newTarget.x, newTarget.y], [target.x, target.y]));
-			
-			}*/
+			if (result.onLine1 && result.onLine2) return { x: Math.round(result.x), y: Math.round(result.y) };
 
 		}
-
-		// get intersection closest to actual target
-		/*intersections.sort(function(a, b) {
-			return math.distance([a.x, a.y], [target.x, target.y]) - math.distance([b.x, b.y], [target.x, target.y]);
-		})
-
-		return intersections[0];
-*/
 	}
 
 	debug(ctx, scaleFactor) {
@@ -149,10 +127,6 @@ class Walkbox {
 		ctx.save();
 
 		ctx.strokeStyle = "#0044FF";
-
-		// Makes sure that lines and sprites align nicely to the middle of pixels
-		// (otherwise lines become blurred between 2 lines/rows)
-		//ctx.translate(.5, .5);
 
 		ctx.beginPath();
 
@@ -170,9 +144,6 @@ class Walkbox {
 		ctx.closePath();
 
 		ctx.stroke();
-
-		// old position
-		//ctx.strokeRect(this._position.x, this._position.y, this._dimensions.width, this._dimensions.height);
 
 		ctx.restore();
 		

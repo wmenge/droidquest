@@ -6,8 +6,9 @@ class Prop {
 		var _this = this;
 
 		if (sprite instanceof Sprite) {
-			this.sprite = sprite;
+			this.name = 'actor';
 		} else {
+			this.name = sprite;
 			_this = this;
 			this.spritePromise = getSprite(sprite).then(function(spriteObj) {
 				_this.sprite = spriteObj;
@@ -22,6 +23,12 @@ class Prop {
 
 		// call back function
 		this.onTarget = null;
+
+		console.debug('Create', this.name, 'at', this.position);
+	}
+
+	setName(name) {
+		this.name = name;
 	}
 
 	setPosition(position) {
@@ -112,6 +119,9 @@ class Prop {
 				_this.show();
 			});
 		}
+
+
+		console.debug('Show', this.name, 'at', this.position);
 	}
 
 	// Prop
@@ -121,6 +131,9 @@ class Prop {
 		if (index > -1) {
   			engine.drawables.splice(index, 1);
 		}
+
+
+		console.debug('hide', this.name);
 	}
 
 }

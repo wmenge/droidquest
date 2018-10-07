@@ -181,8 +181,6 @@ function onKeyDown(event) {
 
 function onMouseClick(event) {
 
-	console.log('onMouseClick');
-
 	event.preventDefault();
 
 	if (!engine.enableInput) return;
@@ -227,8 +225,6 @@ function onTouchStart(event) {
 
 function onMouseMove(event) {
 
-	console.log(event);
-	
 	event.preventDefault();
 
 	// Todo: correctly determine position of feet of actor

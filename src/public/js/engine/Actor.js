@@ -6,8 +6,12 @@ class Actor {
 
 		if (sprite instanceof Sprite) {
 			this.sprite = sprite;
+			this.name = 'actor';
 		} else {
+			this.name = sprite;
+
 			_this = this;
+
 			this.spritePromise = getSprite(sprite).then(function(spriteObj) {
 				_this.sprite = spriteObj;
 			});
@@ -33,6 +37,12 @@ class Actor {
 
 		// scalefactor of sprite, set to 2 for jumbo!
 		this.scaleFactor = 1;
+
+		console.debug('Create', this.name, 'at', this.position);
+	}
+
+	setName(name) {
+		this.name = name;
 	}
 
 	setPosition(position) {
@@ -82,6 +92,8 @@ class Actor {
 
 		this.shown = true;
 
+		console.debug('Show', this.name, 'at', this.position);
+
 		return this;
 	}
 
@@ -101,11 +113,15 @@ class Actor {
 
 		this.shown = false;
 
+		console.debug('Hide', this.name);
+
 		return this;
 	}
 	
 	// Actor
 	wait(timeout) {
+
+	  console.debug(this.name, 'waits for', timeout, 'ms');
 
 	  let promise = new Promise((resolve, reject) => {
 	    setTimeout(() => resolve(), timeout)
@@ -134,12 +150,13 @@ class Actor {
 
     	// Check if the new target is within the walkbox
     	if (walkbox && !walkbox.contains(newTarget)) {
-    		//return null;
-    		// Correct the target so that it lies on the edge of the walkbox
-    		newTarget = walkbox.correctedTarget(this.position, newTarget);
+    		var correctedTarget = walkbox.correctedTarget(this.position, newTarget);
+    		console.info('corrected target', newTarget, 'to', correctedTarget, 'by', walkbox);
+    		newTarget = correctedTarget;
+
     	}
 
-    	console.log('Actor.moveTo: ', newTarget);
+    	console.info('Move', this.name, 'to', newTarget);
 
 		this.target = newTarget;
 
@@ -342,7 +359,10 @@ class Actor {
 		if (!this.isMoving()) {
 			this.tag = this.state;
 			this.oldPosition = null;
+			this.target = null;
 			this.outsideResolve();
+
+			console.debug(this.name, 'arrived at', this.position);
 		}
 	};
 

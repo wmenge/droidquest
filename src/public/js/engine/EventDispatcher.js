@@ -24,16 +24,12 @@ let EventDispatcher = (superclass) => class extends superclass {
 
 	addEventListener(event, listener) {
 
-		console.log("addEventListener");
-
 		if (!this.eventListeners[event]) this.eventListeners[event] = [];
 
 		this.eventListeners[event].push(listener);
 	}
 
 	dispatchEvent(event, data) {
-
-		console.log("dispatchEvent");
 
 		var customEvent = new CustomEvent(event, { detail: data });
 		var listeners = this.eventListeners[event];

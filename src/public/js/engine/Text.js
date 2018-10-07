@@ -33,7 +33,11 @@ class Text {
 
 	show(effect) {
 
-		console.log('show', this.content, 'with effect: ', effect);
+		if (effect) {
+			console.info(effect, ':', this.content);
+		} else {
+			console.info(this.content);
+		}
 		
 		this.element = document.createElement(this.type);
 		
@@ -70,19 +74,11 @@ class Text {
 
 	hide(effect) {
 
-		console.log('hide', this.content, 'with effect: ', effect);
-		
 		if (effect) {
-			console.log('show', this.content, 'with effect: ', effect);
-		} else {
-			console.log('show', this.content);
-		}
-
-
-		if (effect) {
-			console.log('hide', effect);
+			console.debug('hide with', effect, this.content);
 			this.element.classList.add(effect);
 		} else {
+			console.debug('hide', this.content);
 			this.element.parentNode.removeChild(this.element);
 		}
 
