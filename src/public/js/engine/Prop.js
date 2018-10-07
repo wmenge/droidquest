@@ -41,9 +41,9 @@ class Prop {
 
 	// Sprite/sheet (remove from prop and handle in engine?)
 	// should engine.dwarables be only filled with sprites?
-	draw(ctx) {
+	draw(ctx, timestamp, scaleFactor) {
 
-		this.sprite.draw(ctx, this.position.x + this.origin.x, this.position.y + this.origin.y, this.orientation, 0);
+		this.sprite.draw(ctx, (this.position.x + this.origin.x) * scaleFactor.x, (this.position.y + this.origin.y) * scaleFactor.y, this.orientation, 0, scaleFactor);
 
 	}
 
@@ -76,18 +76,22 @@ class Prop {
 
 	}
 
-	debug(ctx) {
+	debug(ctx, scaleFactor) {
 
 		// Makes sure that lines and sprites align nicely to the middle of pixels
 		// (otherwise lines become blurred between 2 lines/rows)
-		ctx.translate(.5, .5);
+		//ctx.translate(.5, .5);
 
 		var dimensions = this.sprite.getDimensions();
 
 		// old position
-		ctx.strokeRect(this.position.x + this.origin.x, this.position.y + this.origin.y, dimensions.width, dimensions.height);
+		ctx.strokeRect(
+			(this.position.x + this.origin.x) * scaleFactor.x, 
+			(this.position.y + this.origin.y) * scaleFactor.y, 
+			dimensions.width * scaleFactor.x, 
+			dimensions.height * scaleFactor.y);
 
-		ctx.restore();
+		//ctx.restore();
 		
 	}
 

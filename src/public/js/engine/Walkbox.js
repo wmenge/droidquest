@@ -144,7 +144,7 @@ class Walkbox {
 */
 	}
 
-	debug(ctx) {
+	debug(ctx, scaleFactor) {
 
 		ctx.save();
 
@@ -152,7 +152,7 @@ class Walkbox {
 
 		// Makes sure that lines and sprites align nicely to the middle of pixels
 		// (otherwise lines become blurred between 2 lines/rows)
-		ctx.translate(.5, .5);
+		//ctx.translate(.5, .5);
 
 		ctx.beginPath();
 
@@ -161,9 +161,9 @@ class Walkbox {
 			var point = this._points[i];
 
 			if (i == 0) {
-				ctx.moveTo(point.x, point.y);
+				ctx.moveTo(point.x * scaleFactor.x, point.y * scaleFactor.y);
 			} else {
-				ctx.lineTo(point.x, point.y);
+				ctx.lineTo(point.x * scaleFactor.x, point.y * scaleFactor.y);
 			}
 		}
 

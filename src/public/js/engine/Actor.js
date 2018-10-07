@@ -31,6 +31,8 @@ class Actor {
 
 		this.shown = false;
 
+		// scalefactor of sprite, set to 2 for jumbo!
+		this.scaleFactor = 1;
 	}
 
 	setPosition(position) {
@@ -50,6 +52,11 @@ class Actor {
 
 	setVelocity(velocity) {
 		this.velocity = velocity;
+		return this;
+	}
+
+	setScaleFactor(scaleFactor) {
+		this.scaleFactor = scaleFactor;
 		return this;
 	}
 
@@ -179,7 +186,6 @@ class Actor {
 		};
 
 		//determine orientation (try to do by simple formula)
-		//if (this.isSpriteSheet) {
 		if (Math.abs(distance.y) > Math.abs(distance.x)) {
 			if (distance.y > 0) {
 				this.state = "Front"; // enumerations!
@@ -195,8 +201,6 @@ class Actor {
 		}
 
 		this.tag = this.state + "Walk";
-
-		//}
 
 		// Setup promise so that the caller can wait until
 		// the move has finished (causing the promise to be fullfilled)
@@ -219,9 +223,12 @@ class Actor {
 	}
 
 	// SpriteSheet
-	draw(ctx, timestamp) {
+	draw(ctx, timestamp, engineScaleFactor) {
 
-		this.sprite.draw(ctx, this.position.x + this.origin.x, this.position.y + this.origin.y, this.tag, timestamp);
+		// performance: prevent object creation
+		var spriteScale = { x: engineScaleFactor.x * this.scaleFactor, y: engineScaleFactor.y * this.scaleFactor };
+
+		this.sprite.draw(ctx, (this.position.x + this.origin.x * this.scaleFactor) * engineScaleFactor.x, (this.position.y + this.origin.y * this.scaleFactor) * engineScaleFactor.y, this.tag, timestamp, spriteScale);
 
 	}
 
@@ -256,37 +263,40 @@ class Actor {
 	}
 
 	// Sprite
-	debug(ctx) {
+	debug(ctx, engineScaleFactor) {
 
-		ctx.save();
+		// performance: prevent object creation
+		var scaleFactor = { x: engineScaleFactor.x * this.scaleFactor, y: engineScaleFactor.y * this.scaleFactor };
+
+		//ctx.save();
 
 		// Makes sure that lines and sprites align nicely to the middle of pixels
 		// (otherwise lines become blurred between 2 lines/rows)
-		ctx.translate(.5, .5);
+		//ctx.translate(.5, .5);
 
 		var dimensions = this.sprite.getDimensions();
 	
 		// old position
 		if (this.oldPosition) {
-			ctx.strokeRect(this.oldPosition.x + this.origin.x, this.oldPosition.y + this.origin.y, dimensions.width, dimensions.height);
+			ctx.strokeRect((this.oldPosition.x + this.origin.x * this.scaleFactor) * engineScaleFactor.x, (this.oldPosition.y + this.origin.y * this.scaleFactor) * engineScaleFactor.y, dimensions.width * scaleFactor.x, dimensions.height * scaleFactor.y);
 		} else {
-			ctx.strokeRect(this.position.x + this.origin.x, this.position.y + this.origin.y, dimensions.width, dimensions.height);	
+			ctx.strokeRect((this.position.x + this.origin.x * this.scaleFactor) * engineScaleFactor.x, (this.position.y + this.origin.y * this.scaleFactor) * engineScaleFactor.y, dimensions.width * scaleFactor.x, dimensions.height * scaleFactor.y);	
 		}
 
 		// target
 		if (this.target) {
-			ctx.strokeRect(this.target.x + this.origin.x, this.target.y + this.origin.y, dimensions.width, dimensions.height);
+			ctx.strokeRect((this.target.x + this.origin.x * this.scaleFactor) * engineScaleFactor.x, (this.target.y + this.origin.y * this.scaleFactor) * engineScaleFactor.y, dimensions.width * scaleFactor.x, dimensions.height * scaleFactor.y);
 		}
 
 		// line to target
 		if (this.oldPosition && this.target) {
 			ctx.beginPath();
-			ctx.moveTo(this.oldPosition.x, this.oldPosition.y);
-			ctx.lineTo(this.target.x,this.target.y);
+			ctx.moveTo(this.oldPosition.x * engineScaleFactor.x, this.oldPosition.y * engineScaleFactor.y);
+			ctx.lineTo(this.target.x * engineScaleFactor.x,this.target.y * engineScaleFactor.y);
 			ctx.stroke();
 		}
 
-		ctx.restore();
+		//ctx.restore();
 
 	}
 		
@@ -331,6 +341,7 @@ class Actor {
 
 		if (!this.isMoving()) {
 			this.tag = this.state;
+			this.oldPosition = null;
 			this.outsideResolve();
 		}
 	};

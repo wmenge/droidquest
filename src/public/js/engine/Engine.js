@@ -28,6 +28,13 @@ class Engine extends mix(Object).with(EventDispatcher) {
 		this.lastFrameTimeMs = 0;
 		this.maxFPS = 144;
 
+		// internal scale factor: factor between game pixels and canvas pixels
+		// which have nothing to do with screen pixels as the canvas itself
+		// can be scaled to fit the browser window
+		this.gameDimensions = { width: 460, height: 240 };
+
+		this.scaleFactor = { x: this.canvas.width / this.gameDimensions.width, y: this.canvas.height / this.gameDimensions.height };
+
 		// on change, modify cursor (through setter)
 		this.enableInput = true;
 
@@ -83,8 +90,6 @@ class Engine extends mix(Object).with(EventDispatcher) {
 
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // clear canvas
 
-		this.ctx.save();
-
 		this.zsort();
 
 		for (var i in this.movables) {
@@ -94,17 +99,23 @@ class Engine extends mix(Object).with(EventDispatcher) {
 	    }
 
 		for (var i in this.drawables) {
-			this.drawables[i].draw(this.ctx, timestamp);
+			this.drawables[i].draw(this.ctx, timestamp, this.scaleFactor);
 	    }
+
+	    // Makes sure that lines and sprites align nicely to the middle of pixels
+		// (otherwise lines become blurred between 2 lines/rows)
+		this.ctx.save();
+
+		this.ctx.translate(.5, .5);
 
 	    if (this.debugMode) {
 
 			for (var i in this.drawables) {
-				this.drawables[i].debug(this.ctx);
+				this.drawables[i].debug(this.ctx, this.scaleFactor);
 		    }
 
 		    for (var i in this.debuggables) {
-				this.debuggables[i].debug(this.ctx);
+				this.debuggables[i].debug(this.ctx, this.scaleFactor);
 		    }	    	
 
 		}
@@ -125,8 +136,8 @@ class Engine extends mix(Object).with(EventDispatcher) {
 	getTarget(event) {
 
 		var target = {
-	    	x: Math.floor(event.offsetX * this.canvas.width / this.canvas.clientWidth),
-	    	y: Math.floor(event.offsetY * this.canvas.height / this.canvas.clientHeight)
+	    	x: Math.floor(event.offsetX * this.gameDimensions.width / this.canvas.clientWidth),
+	    	y: Math.floor(event.offsetY * this.gameDimensions.height / this.canvas.clientHeight)
 	    };
 
 	    return target;
@@ -135,8 +146,8 @@ class Engine extends mix(Object).with(EventDispatcher) {
 	// todo: if this works, also use for desktop
 	getTouchTarget(event) {
 		var target = {
-	    	x: Math.floor((event.clientX - this.canvas.offsetLeft) / this.canvas.clientWidth * this.canvas.width),
-	    	y: Math.floor((event.clientY - this.canvas.offsetTop) / this.canvas.clientHeight * this.canvas.height)
+	    	x: Math.floor((event.clientX - this.canvas.offsetLeft) / this.canvas.clientWidth * this.gameDimensions.width),
+	    	y: Math.floor((event.clientY - this.canvas.offsetTop) / this.canvas.clientHeight * this.gameDimensions.height)
 	    };
 
 	    return target;	

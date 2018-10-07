@@ -4,10 +4,13 @@ class Sprite {
 		this.image = image
 	}
 
-	draw(ctx, x, y) {
-		ctx.save();		
-		ctx.drawImage(this.image, x, y);
-		ctx.restore();
+	draw(ctx, x, y, tag, time, scaleFactor) {
+		ctx.drawImage(
+			this.image, 
+			x, 
+			y,
+			this.image.naturalWidth * scaleFactor.x, 
+			this.image.naturalHeight * scaleFactor.y);
 	}
 
 	getDimensions() {
@@ -83,7 +86,7 @@ class SpriteSheet extends Sprite {
 	}
 
 	// Sprite/sheet
-	draw(ctx, x, y, tag, time) {
+	draw(ctx, x, y, tag, time, scaleFactor) {
 
 		var animation = this.animations[tag];
 		var frame = animation.getFrame(time);
@@ -98,8 +101,8 @@ class SpriteSheet extends Sprite {
 			frame.sourceSize.h, 
 			x, 
 			y,
-			frame.sourceSize.w, 
-			frame.sourceSize.h);
+			frame.sourceSize.w * scaleFactor.x, 
+			frame.sourceSize.h * scaleFactor.y);
 
 		ctx.restore();
 
