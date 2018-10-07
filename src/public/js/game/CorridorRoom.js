@@ -10,7 +10,7 @@ class CorridorRoom extends Room {
 			.setOrigin({ x: -36 / 2, y: -40 });
 
 		this.plans = new Prop('plans')
-			.setPosition({x: 360, y: 180 })
+			.setPosition({x: Math.round(Math.random() * 360 + 100), y: Math.round(Math.random() * 80 + 140) })
 
 		game.obtainedPlans = false;
 
