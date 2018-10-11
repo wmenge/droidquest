@@ -1,7 +1,7 @@
-var game = {
+var game2 = {
 	init: function() {
 
-		var room = new DemoRoom("tatooine");
+		var room = new DemoRoom2("tatooine");
 		room.init();
 		room.enter();
 		
@@ -9,7 +9,7 @@ var game = {
 	}
 }
 
-class DemoRoom extends Room {
+class DemoRoom2 extends Room {
 
 	enter() {
 
@@ -100,5 +100,7 @@ function getRandomCoordinates() {
 	};
 }
 
-engine.init();
-game.init();
+function demo2() {
+	engine.init();
+	game2.init();
+}

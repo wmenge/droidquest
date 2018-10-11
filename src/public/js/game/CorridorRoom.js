@@ -102,13 +102,4 @@ class CorridorRoom extends Room {
 
 	}
 
-	exit() {
-		// todo: auto hide all children
-		this.walkbox.deactivate();
-		this.plans.hide();
-		this.door.hide();
-		this.doorPanel.hide();
-		this.mainActor.hide();
-	}
-
 }

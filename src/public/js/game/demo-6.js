@@ -1,15 +1,15 @@
-var game = {
+var game6 = {
 	init: function() {
 
-		this.tatooineRoom = new TatooineRoom("tatooine");
-		this.tatooineRoom.init();
-		this.tatooineRoom.enter();
+		this.room = new DemoRoom6("tatooine");
+		this.room.init();
+		this.room.enter();
 		
 		requestAnimationFrame(mainLoop);
 	}
 }
 
-class TatooineRoom extends Room {
+class DemoRoom6 extends Room {
 
 	init() {	
 		super.init();
@@ -35,7 +35,7 @@ class TatooineRoom extends Room {
 		var _this = this;
 
 		engine.onTarget = function(event) {
-			game.tatooineRoom.mainActor.moveTo(event.detail, _this.walkbox);
+			_this.mainActor.moveTo(event.detail, _this.walkbox);
 		};
 
 	}
@@ -69,6 +69,7 @@ class TatooineRoom extends Room {
 
 }
 
-
-engine.init();
-game.init();
+function demo6() {
+	engine.init();
+	game6.init();
+}

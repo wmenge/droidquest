@@ -12,20 +12,19 @@
 <body>
 
   <div class="flexContainer">
-    <canvas id="gameCanvas" width="920" height="480" moz-opaque></canvas>
+    <canvas id="gameCanvas" class="tatooine" width="920" height="480" moz-opaque></canvas>
   </div>
 
   <div class="flexContainer" id="textContainer">
     <div id="overlayContainer">
-      <div class="textOverlay small outline" style="text-align: right; margin-top: 48%; margin-right: 2%">
-        <a href="demo-001.html" class="button buttonOutline">1</a>
-        <a href="demo-002.html" class="button buttonOutline">2</a>
-        <a href="demo-003.html" class="button buttonOutline">3</a>
-        <a href="demo-004.html" class="button buttonOutline">4</a>
-        <a href="demo-005.html" class="button buttonOutline">5</a>
-        <a href="demo-006.html" class="button buttonOutline">6</a>
+        <div id="demobuttons" class="textOverlay small outline" style="text-align: right; margin-top: 48%; margin-right: 2%">
+          <a onClick="demo1();" class="button buttonOutline">1</a>
+          <a onClick="demo2();" class="button buttonOutline">2</a>
+          <a onClick="demo3();" class="button buttonOutline">3</a>
+          <a onClick="demo4();" class="button buttonOutline">4</a>
+          <a onClick="demo5();" class="button buttonOutline">5</a>
+          <a onClick="demo6();" class="button buttonOutline">6</a>
       </div>
-
     </div>
   </div>
 
@@ -40,9 +39,14 @@
   <script src="js/engine/Actor.js"></script>
   <script src="js/engine/Text.js"></script>
   <script src="js/engine/Button.js"></script>
-
+  
   <!-- game stuff -->
+  <script src="js/game/demo-1.js"></script>
   <script src="js/game/demo-2.js"></script>
+  <script src="js/game/demo-3.js"></script>
+  <script src="js/game/demo-4.js"></script>
+  <script src="js/game/demo-5.js"></script>
+  <script src="js/game/demo-6.js"></script>
 </body>
 </body>
 </html>

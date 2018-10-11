@@ -1,15 +1,15 @@
-var game = {
+var game4 = {
 	init: function() {
 
-		this.tatooineRoom = new TatooineRoom("tatooine");
-		this.tatooineRoom.init();
-		this.tatooineRoom.enter();
+		this.room = new DemoRoom4("tatooine");
+		this.room.init();
+		this.room.enter();
 		
 		requestAnimationFrame(mainLoop);
 	}
 }
 
-class TatooineRoom extends Room {
+class DemoRoom4 extends Room {
 
 	init() {	
 		super.init();
@@ -91,6 +91,7 @@ class TatooineRoom extends Room {
 
 }
 
-
-engine.init();
-game.init();
+function demo4() {
+	engine.init();
+	game4.init();
+}

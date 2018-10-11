@@ -70,6 +70,19 @@ class Engine extends mix(Object).with(EventDispatcher) {
 		if (this.coordinatesOverlay) {
 			this.canvas.addEventListener("mousemove", onMouseMove, false);
 		}
+
+		// remove any old items
+		this.drawables = [];
+		this.movables = [];
+		this.debuggables = [];
+
+		// remove any old tekst (move to Text class?)
+		var overLay = document.getElementById('overlayContainer');//.appendChild(this.element);
+
+		Array.from(overLay.children).forEach(function(item) {
+			// bad hack
+			if (item.id != "demobuttons") overLay.removeChild(item);
+		});
 	}
 
     draw(timestamp) {

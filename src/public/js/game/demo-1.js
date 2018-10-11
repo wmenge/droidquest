@@ -1,21 +1,21 @@
-var game = {
+var game1 = {
 	init: function() {
 
-		tatooineRoom = new TatooineRoom("tatooine");
+		room = new DemoRoom1("tatooine");
 
-		tatooineRoom.walkbox = {
+		room.walkbox = {
 				a: { x: 0, y: 140},
 				b: { x: 460, y: 240}
 		};
 
-		tatooineRoom.init();
-		tatooineRoom.enter();
+		room.init();
+		room.enter();
 		
 		requestAnimationFrame(mainLoop);
 	}
 }
 
-class TatooineRoom extends Room {
+class DemoRoom1 extends Room {
 
 	init() {	
 		super.init();
@@ -103,5 +103,7 @@ class TatooineRoom extends Room {
 
 }
 
-engine.init();
-game.init();
+function demo1() {
+	engine.init();
+	game1.init();
+}

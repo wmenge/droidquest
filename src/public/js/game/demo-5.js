@@ -1,7 +1,7 @@
-var game = {
+var game5 = {
 	init: function() {
 
-		var demoRoom = new DemoRoom("tatooine");
+		var demoRoom = new DemoRoom5("tatooine");
 		demoRoom.init();
 		demoRoom.enter();
 		
@@ -9,7 +9,7 @@ var game = {
 	}
 }
 
-class DemoRoom extends Room {
+class DemoRoom5 extends Room {
 
 
 	enter() {
@@ -57,5 +57,7 @@ class DemoRoom extends Room {
 
 }
 
-engine.init();
-game.init();
+function demo5() {
+	engine.init();
+	game5.init();
+}
