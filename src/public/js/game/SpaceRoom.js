@@ -8,7 +8,7 @@ class SpaceRoom extends Room {
 			.setPosition({ x: 170, y: 80 })
 			.show('fadeIn');
 
-		this.footer = new Text('Use the <a href="https://github.com/wmenge/droidquest" target="_blank">source</a> Luke!<br><br><a href="demo-001.html">Click for Tech demos</a>')
+		this.footer = new Text('Use the <a href="https://github.com/wmenge/droidquest" target="_blank">source</a> Luke!<br><br><a href="demo.html">Click for Tech demos</a>')
 			.setPosition({ x: 10, y: 220 })
 			.addClassName('center')
 			.addClassName('small')
@@ -27,14 +27,6 @@ class SpaceRoom extends Room {
 
 			})
 			.show('fadeIn');
-
-	}
-
-	exit() {
-
-		this.text.hide();
-		this.button.hide();
-		this.footer.hide();
 
 	}
 

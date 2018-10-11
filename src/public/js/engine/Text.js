@@ -78,8 +78,10 @@ class Text {
 			console.debug('hide with', effect, this.content);
 			this.element.classList.add(effect);
 		} else {
-			console.debug('hide', this.content);
-			this.element.parentNode.removeChild(this.element);
+			if (this.element.parentNode) {
+				console.debug('hide', this.content);
+				this.element.parentNode.removeChild(this.element);
+			}
 		}
 
 

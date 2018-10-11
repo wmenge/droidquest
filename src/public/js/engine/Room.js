@@ -15,6 +15,14 @@ class Room {
 
 	exit() {
 		console.info('Exit', this.className);
+
+		// hide all showable members
+		for (var property in this) {
+			if (typeof this[property].hide === 'function') {
+				this[property].hide();
+			}
+		}
+
 		engine.canvas.className = null;
 	}
 
