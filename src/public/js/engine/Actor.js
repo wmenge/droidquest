@@ -6,12 +6,16 @@ class Actor extends Prop {
 		
 		this.target = null;
 		this.velocity = 60; // pixels per second
+
+		// rename to sprite state (or direction on actor level)
 		this.state = "Front";
 		this.tag = this.state;
 
 		// call back functions
 		this.onTarget = null;
 		this.onMoveStart = null;
+
+		this.talkingSpeed = 25; // characters per second
 	}
 
 	setVelocity(velocity) {
@@ -24,6 +28,17 @@ class Actor extends Prop {
 		return this;
 	}
 
+	setState(state) {
+		this.state = state;
+		this.tag = this.state;
+		return this;
+	}
+
+	setTalkingSpeed(talkingSpeed) {
+		this.talkingSpeed = talkingSpeed;
+		return this;
+	}
+ 
 	show() {
 
 		super.show();
@@ -251,6 +266,70 @@ class Actor extends Prop {
 	isMoving() {
 		if (this.target == null) return false;
 		return (this.position.x != this.target.x) || (this.position.y != this.target.y);
+	}
+
+	// todo: create talkbubble class?
+	talk(line, direction) {
+
+		const screenMargin = 10;
+		const dialogWidth = 200;
+		const baselineDuration = 500; //ms
+		const dialogPrePause = 200;
+
+		console.info(this.name, 'says:');
+
+		// duration = baseline duration + time per character
+		// this way, shorter lines get more time than long lines
+		var duration = baselineDuration + line.length / this.talkingSpeed * 1000;
+
+		var _this = this;
+
+		var text = new Text(line)
+			.setDimensions({width: dialogWidth, height: 0})
+			.addClassName('outline')
+			.addClassName('dialog')
+			.addClassName(this.name) // allows to specify font color in css
+			//.addClassName('debug')
+
+		this.spritePromise.then(function(result) {
+
+			_this.setState(direction);
+
+			var dimensions = _this.sprite.getDimensions();
+			
+			var textPosition = { 
+				x: Math.min(engine.gameDimensions.width - (dialogWidth + screenMargin), Math.max(screenMargin, _this.position.x - (dialogWidth/2))), 
+				y: _this.position.y - (dimensions.height) 
+			};
+			
+			text.setPosition(textPosition);
+				
+			if (_this.position.x <= (dialogWidth/2 - screenMargin)) {
+				text.addClassName('left');
+			} else if (_this.position.x >= engine.gameDimensions.width - (dialogWidth + screenMargin)) {
+				text.addClassName('right');
+			} else {
+				text.addClassName('center');
+			}
+		
+			setTimeout(function() {
+				text.show(null, true);
+			}, dialogPrePause);
+
+		});
+		
+		var outsideResolve;
+
+		let promise = new Promise(function(resolve) { 
+			outsideResolve = resolve; 
+		});
+
+		setTimeout(function() {
+			text.hide();
+			outsideResolve();
+		}, duration + dialogPrePause);
+	
+		return promise;
 	}
 
 }

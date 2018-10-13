@@ -31,7 +31,7 @@ class Text {
 		return this;
 	}
 
-	show(effect) {
+	show(effect, dialog) {
 
 		if (effect) {
 			console.info(effect, ':', this.content);
@@ -66,7 +66,14 @@ class Text {
 			this.element.style.height = (this.dimensions.height / 240 * 100) + "%";
 		}
 
-	    this.element.innerHTML = this.content;
+		// do not use innerhtml > performance?
+		// frist span: center bottom, second span: centered bubble that autogrows with content
+	    if (dialog) {
+			this.element.innerHTML = "<span><span class='dialogContent'>" + this.content + "</span></span>";
+	    } else {
+	    	this.element.innerHTML = this.content;
+	    }
+
 	    document.getElementById('overlayContainer').appendChild(this.element);
 
 		return this;

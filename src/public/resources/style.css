@@ -8,7 +8,7 @@ html, body {
   margin: 0;
   background-color: black;
   color: #ffd700;
-  font: normal 1.75vw "C64 Pro Local", verdana, helvetica, sans-serif;
+  font: normal 1.5vw "C64 Pro Local", verdana, helvetica, sans-serif;
   line-height: 150%;
 
   cursor: crosshair;
@@ -41,8 +41,38 @@ a:hover {
   
 }
 
+/* dialog colors */
+.r2d2 {
+  color: #eeeeee;
+}
+
+.dialog {
+  /*vertical-align: bottom;*/
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.dialogContent {
+  display: inline-block;
+  padding: 1vw 3vw;
+  background-color: rgba(0,0,0,.375);
+  border-radius: 1vw;
+  /*width: auto;
+  vertical-align: bottom;*/
+}
+
+.left {
+  text-align: left;
+}
+
 .center {
   text-align: center;
+}
+
+.right {
+  text-align: right;
 }
 
 .small {

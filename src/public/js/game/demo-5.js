@@ -23,11 +23,11 @@ class DemoRoom5 extends Room {
 			.addClassName('outline')
 			.show();
 
-			new Prop()
-				.setPosition({ x: 230, y: 120 })
-				//.setDimensions({ width: 10, height: 10 })
-				//.setOrigin({ x: -5, y: -5 })
-				.show()
+		new Prop()
+			.setPosition({ x: 230, y: 120 })
+			//.setDimensions({ width: 10, height: 10 })
+			//.setOrigin({ x: -5, y: -5 })
+			.show()
 
 		for (var i = 0; i < 10; i++) {
 
