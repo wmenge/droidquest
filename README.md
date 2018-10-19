@@ -1,7 +1,7 @@
 # Droid Quest
 
 A html point and click classic inspired by [Thimbleweed Park](https://thimbleweedpark.com) and 
-the [development blog](https://blog.thimbleweedpark.com) of that game
+the [development blog](https://blog.thimbleweedpark.com) of that game. A playable version can be found [here](https://droidquest.wilcomenge.nl).
 
 ## Promises
 Some magic with [promises](https://javascript.info/async-await) is used to be able to create intuitive, synchronous-like scripts. This means that - if desired - 
