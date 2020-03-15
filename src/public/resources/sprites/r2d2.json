@@ -75,7 +75,7 @@
  "meta": {
   "app": "http://www.aseprite.org/",
   "version": "1.1.12-dev",
-  "image": "/Users/wilcomenge/Documents/game-dev/art/r2d2/r2d2.png",
+  "image": "r2d2.png",
   "format": "RGBA8888",
   "size": { "w": 288, "h": 47 },
   "scale": "1",

@@ -1,30 +1,13 @@
-var game7 = {
-	init: function() {
-
-		room = new DemoRoom7("tatooine");
-
-		room.walkbox = {
-				a: { x: 0, y: 140},
-				b: { x: 460, y: 240}
-		};
-
-		room.init();
-		room.enter();
-		
-		requestAnimationFrame(mainLoop);
-	}
-}
-
 class DemoRoom7 extends Room {
 
 	init() {	
 		super.init();
 
 		this.mainActor = new Actor('r2d2')
-			.setOrigin({ x: -36 / 2, y: -40 });
+			.setOrigin({ x: 36 / 2, y: 40 });
 		
 		this.tower = new Prop('tower')
-			.setOrigin({ x: -58 / 2, y: -161 })
+			.setOrigin({ x: 58 / 2, y: 161 })
 			.setPosition({x: 430, y: 176 });
 	}
 
@@ -33,24 +16,18 @@ class DemoRoom7 extends Room {
 		super.enter();
 
 		this.mainActor.position = { x: 190, y: 160};
-		this.mainActor.speed = 90;
-		this.mainActor.setTalkingSpeed(10)
+		this.mainActor.speed = 200;
+		this.mainActor.setTalkingSpeed(10).setDialogColor("#AAAAFF");
+
 		this.mainActor.show();
 
 		this.tower.show();
 
 		this.text = new Text("Tech demo 7: A talking droid")
 			.setPosition({ x: 10, y: 5 })
-			.addClassName('small')
-			.addClassName('outline')
+			//.addClassName('small')
+			//.addClassName('outline')
 			.show();
-
-		this.debugButton = new Button("toggle debugger")
-			.setPosition({ x: 10, y: 220 })
-			.addClassName('small')
-			.addClassName('buttonOutline').onSelect(function() {
-				engine.debugMode = !engine.debugMode;
-			}).show();
 
 		/* 
 			Scripting moves
@@ -83,6 +60,8 @@ class DemoRoom7 extends Room {
 				// after the previous step has completely finished
 
 				//actor.velocity = 1000;
+
+				await actor.moveRelative({ x: 60, y: 0});
 
 				await actor.talk('Oooh boy, i’m worried...', 'Front');
 			    
@@ -128,6 +107,5 @@ class DemoRoom7 extends Room {
 }
 
 function demo7() {
-	engine.init();
-	game7.init();
+	game.show(new DemoRoom7("tatooine"));
 }

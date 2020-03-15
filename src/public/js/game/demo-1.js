@@ -1,55 +1,33 @@
-var game1 = {
-	init: function() {
-
-		room = new DemoRoom1("tatooine");
-
-		room.walkbox = {
-				a: { x: 0, y: 140},
-				b: { x: 460, y: 240}
-		};
-
-		room.init();
-		room.enter();
-		
-		requestAnimationFrame(mainLoop);
-	}
-}
-
 class DemoRoom1 extends Room {
 
 	init() {	
 		super.init();
 
+		// Actors, props etc that are instance variables of
+		// the current room will automatically be hidden
+		// when you exit the room
+		// Todo: have props have a located in property/method
 		this.mainActor = new Actor('r2d2')
-			.setOrigin({ x: -36 / 2, y: -40 });
+			.setOrigin({ x: 36 / 2, y: 40 });
 		
 		this.tower = new Prop('tower')
-			.setOrigin({ x: -58 / 2, y: -161 })
+			.setOrigin({ x: 58 / 2, y: 161 })
 			.setPosition({x: 430, y: 176 });
 	}
 
-	enter() {
+	onEnter() {
 
-		super.enter();
+		super.onEnter();
 
-		this.mainActor.position = { x: 190, y: 160};
-		this.mainActor.speed = 90;
-		this.mainActor.show();
+		this.mainActor
+			.setPosition({ x: 190, y: 160 })
+			.show();
 
 		this.tower.show();
 
-		this.text = new Text("Tech demo 1: Nervous drone pacing back and forth<br />Demonstrates synchronous (blocking) scripting")
+		this.text = new Text("Tech demo 1: Nervous drone pacing back and forth\nDemonstrates synchronous (blocking) scripting")
 			.setPosition({ x: 10, y: 5 })
-			.addClassName('small')
-			.addClassName('outline')
 			.show();
-
-		this.debugButton = new Button("toggle debugger")
-			.setPosition({ x: 10, y: 220 })
-			.addClassName('small')
-			.addClassName('buttonOutline').onSelect(function() {
-				engine.debugMode = !engine.debugMode;
-			}).show();
 
 		/* 
 			Scripting moves
@@ -84,16 +62,8 @@ class DemoRoom1 extends Room {
 			    await actor.moveRelative({ x: 120, y: 0});
 			    await actor.wait(250);
 
-			    /*await actor.moveRelative({ x: 0, y: 60});
-			    await actor.wait(750);
-
-			    await actor.moveRelative({ x: -300, y: 0});
-			    await actor.wait(750);*/
-
 			    await actor.moveRelative({ x: -120, y: 0});
 			    await actor.wait(250);
-
-
 
 			}
 
@@ -104,6 +74,5 @@ class DemoRoom1 extends Room {
 }
 
 function demo1() {
-	engine.init();
-	game1.init();
+	game.show(new DemoRoom1("tatooine"));
 }

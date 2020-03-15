@@ -327,7 +327,7 @@
  "meta": {
   "app": "http://www.aseprite.org/",
   "version": "1.1.12-dev",
-  "image": "/Users/wilcomenge/Documents/game-dev/art/r2d2/c3po.png",
+  "image": "c3po.png",
   "format": "RGBA8888",
   "size": { "w": 264, "h": 450 },
   "scale": "1",

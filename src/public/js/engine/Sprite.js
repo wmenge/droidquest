@@ -1,4 +1,5 @@
-class Sprite {
+
+/*class Sprite {
 
 	constructor(image) {
 		this.image = image
@@ -21,7 +22,7 @@ class Sprite {
 		return this.dimensions;
 	}
 
-}
+}*/
 
 class Animation {
 
@@ -59,11 +60,12 @@ class Animation {
 
 }
 
-class SpriteSheet extends Sprite {
+//rename to animationsheet
+class SpriteSheet { //extends Sprite {
 
-	constructor(image, sheetInformation) {
+	constructor(sheetInformation) {
 
-		super(image);
+		//super(image);
 		
 		this.animations = {};
 
@@ -86,12 +88,14 @@ class SpriteSheet extends Sprite {
 	}
 
 	// Sprite/sheet
-	draw(ctx, x, y, tag, time, scaleFactor) {
+	getFrame(time, tag) {
 
 		var animation = this.animations[tag];
 		var frame = animation.getFrame(time);
+
+		return frame
 		
-		ctx.save();
+		/*ctx.save();
 
 		ctx.drawImage(
 			this.image, 
@@ -104,12 +108,13 @@ class SpriteSheet extends Sprite {
 			frame.sourceSize.w * scaleFactor.x, 
 			frame.sourceSize.h * scaleFactor.y);
 
-		ctx.restore();
+		ctx.restore();*/
 
 	}
 
 }
 
+// todo: replace with pixi loader mechanism?
 var spriteCache = {}
 
 function getSprite(name) {
@@ -123,23 +128,23 @@ function getSprite(name) {
 	// https://davidwalsh.name/fetch
 	var promise = new Promise(function(resolve, reject) {
 
-		var image = new Image();
-		image.src = '/resources/sprites/' + name + '.png';
+		//var image = new Image();
+		//image.src = '/resources/sprites/' + name + '.png';
 
 		// url (required), options (optional)
-		fetch('/resources/sprites/' + name + '.json', {
+		fetch('resources/sprites/' + name + '.json', {
 			method: 'get'
 		}).then(async function(response) {
 
 			if (response.status == 200) {
 				var sheetInformation = await response.json();
-				var sprite = new SpriteSheet(image, sheetInformation);
+				var sprite = new SpriteSheet(sheetInformation);
+				resolve(sprite);
 			} else {
-				var sprite = new Sprite(image);
+			//	var sprite = new Sprite(image);
 			}
 
-			resolve(sprite);
-
+			
 		}).catch(function(err) {
 			resolve(sprite);
 		});
@@ -153,4 +158,3 @@ function getSprite(name) {
 	return promise;
 
 }
-

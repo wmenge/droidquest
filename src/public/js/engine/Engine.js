@@ -1,6 +1,17 @@
-function mainLoop(timeStamp) {
+/*function mainLoop(timeStamp) {
 	engine.draw(timeStamp);
+}*/
+
+function gameLoop(delta) {
+	engine.update(delta);
 }
+
+// temp, expose from engine
+var app = null;
+
+var backgroundGroup = null;
+var spriteGroup = null;
+var uiGroup = null;
 
 class Engine extends mix(Object).with(EventDispatcher) {
 
@@ -8,35 +19,14 @@ class Engine extends mix(Object).with(EventDispatcher) {
 
 		super();
 
-		this.canvas = canvas;
-		
-		this.ctx = this.canvas.getContext('2d');
-		this.ctx.mozImageSmoothingEnabled = false;
-		this.ctx.webkitImageSmoothingEnabled = false;
-		this.ctx.msImageSmoothingEnabled = false;
-		this.ctx.imageSmoothingEnabled = false;
+		PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
-		// Show debug lines in bright red
-		this.ctx.strokeStyle = "#FF0000";
-
-		// move to room level?
-		this.drawables = [];
-		this.movables = [];
-		this.debuggables = [];
-
-		this.debugMode = false;
-		this.lastFrameTimeMs = 0;
-		this.maxFPS = 144;
-
-		// internal scale factor: factor between game pixels and canvas pixels
-		// which have nothing to do with screen pixels as the canvas itself
-		// can be scaled to fit the browser window
 		this.gameDimensions = { width: 460, height: 240 };
-
-		this.scaleFactor = { x: this.canvas.width / this.gameDimensions.width, y: this.canvas.height / this.gameDimensions.height };
-
+		
 		// on change, modify cursor (through setter)
 		this.enableInput = true;
+
+		this.debugMode = false;
 
 		var _this = this;
 
@@ -45,65 +35,68 @@ class Engine extends mix(Object).with(EventDispatcher) {
 		});
 	}
 
-	//updateNeeded: false,
-	zsort() {
-
-		this.drawables.sort(function(a, b) { 
-			if (a.zIndex == b.zIndex) {
-				return a.position.y - b.position.y;
-			} else {
-				return a.zIndex - b.zIndex;
-			}
-		});
-
-	}
-
 	init() {
 
-		// register click/touch events
-		this.canvas.addEventListener("click", onMouseClick, false);
-		this.canvas.addEventListener("touchstart", onTouchStart, false);
-		
-		window.addEventListener('keydown',onKeyDown,false);
-		this.coordinatesOverlay = document.getElementById('coordinates');
+		if (app) app.destroy();
 
-		if (this.coordinatesOverlay) {
-			this.canvas.addEventListener("mousemove", onMouseMove, false);
+		this.movables = [];
+		this.debugables = [];
+
+		var flexContainer = document.getElementById("flexContainer");
+		while (flexContainer.firstChild) {
+		    flexContainer.removeChild(flexContainer.firstChild);
 		}
 
-		// remove any old items
-		this.drawables = [];
-		this.movables = [];
-		this.debuggables = [];
+		// resolution is normally used to aid crisp drawing on retina
+		// devices, where there is a ratio between browser/os pixel
+		// and physical pixel. In that case, feed window.devicePixelRatio
+		// into resolution.
+		// In our case, we have a resized 460x240 pixel screen
+		// and we want to allow sprites to move in subpixels. 
+		// 3 seems a good tradeoff between smooth movement and performance
+		app = new PIXI.Application({ 
+	        width: this.gameDimensions.width,         // default: 800
+	        height: this.gameDimensions.height,        // default: 600
+	        antialias: false,    // default: false
+	        transparent: false, // default: false
+	        resolution: 1, //window.devicePixelRatio,      // default: 1
+	      }
+	    );
 
-		// remove any old tekst (move to Text class?)
-		var overLay = document.getElementById('overlayContainer');//.appendChild(this.element);
+	    app.stage = new PIXI.display.Stage();
 
-		Array.from(overLay.children).forEach(function(item) {
-			// bad hack
-			if (item.id != "demobuttons") overLay.removeChild(item);
-		});
+	  	//Add the canvas that Pixi automatically created for you to the HTML document
+    	flexContainer.appendChild(app.view);
+
+		backgroundGroup = new PIXI.display.Group(0, true);
+		spriteGroup = new PIXI.display.Group(1, true);
+		uiGroup = new PIXI.display.Group(2, true);
+
+		app.stage.addChild(new PIXI.display.Layer(backgroundGroup));
+		app.stage.addChild(new PIXI.display.Layer(spriteGroup));
+		app.stage.addChild(new PIXI.display.Layer(uiGroup));
+		
+		// setup gameloop
+		app.ticker.remove(delta => gameLoop(delta));
+        app.ticker.add(delta => gameLoop(delta));
+
+        // create a manager instance, passing stage and renderer.view
+		//this.manager = new PIXI.InteractionManager(stage, renderer.view);
+
+		app.stage.interactive = true;
+		app.stage.click = function(event) {
+
+			// shallow copy by value
+			let target = { x: event.data.global.x , y: event.data.global.y };
+
+			engine.dispatchEvent("target", target);
+		}
+
+
+
 	}
 
-    draw(timestamp) {
-
-    	// Assume that no update is needed after this frame
-    	//this.updateNeeded = false;
-
-		// Throttle the frame rate.    
-	    if (timestamp < this.lastFrameTimeMs + (1000 / this.maxFPS)) {
-	        requestAnimationFrame(mainLoop);
-	        return;
-	    }
-
-	    var delta = timestamp - this.lastFrameTimeMs; // get the delta time since last frame
-	    this.lastFrameTimeMs = timestamp;
-
-	    this.ctx;
-
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // clear canvas
-
-		this.zsort();
+    update(delta) {
 
 		for (var i in this.movables) {
 			this.movables[i].update(delta);
@@ -111,73 +104,59 @@ class Engine extends mix(Object).with(EventDispatcher) {
 			//if (!this.updateNeeded && this.movables[i].isMoving()) this.updateNeeded = true;
 	    }
 
-		for (var i in this.drawables) {
-			this.drawables[i].draw(this.ctx, timestamp, this.scaleFactor);
-	    }
-
-	    // Makes sure that lines and sprites align nicely to the middle of pixels
-		// (otherwise lines become blurred between 2 lines/rows)
-		this.ctx.save();
-
-		this.ctx.translate(.5, .5);
-
-	    if (this.debugMode) {
-
-			for (var i in this.drawables) {
-				this.drawables[i].debug(this.ctx, this.scaleFactor);
-		    }
-
-		    for (var i in this.debuggables) {
-				this.debuggables[i].debug(this.ctx, this.scaleFactor);
-		    }	    	
-
-		}
-
-		this.ctx.restore();
-
-		// only request a new frame when an update is needed
-        //if (this.updateNeeded) {
-			requestAnimationFrame(mainLoop);
-        //}
 	}
 
 	onTarget() {
 
 	}
 
-	// rename to getposition
-	getTarget(event) {
-
-		var target = {
-	    	x: Math.floor(event.offsetX * this.gameDimensions.width / this.canvas.clientWidth),
-	    	y: Math.floor(event.offsetY * this.gameDimensions.height / this.canvas.clientHeight)
-	    };
-
-	    return target;
+	addMovable(movable) {
+		this.movables.push(movable);
 	}
 
-	// todo: if this works, also use for desktop
-	getTouchTarget(event) {
-		var target = {
-	    	x: Math.floor((event.clientX - this.canvas.offsetLeft) / this.canvas.clientWidth * this.gameDimensions.width),
-	    	y: Math.floor((event.clientY - this.canvas.offsetTop) / this.canvas.clientHeight * this.gameDimensions.height)
-	    };
-
-	    return target;	
+	removeMovable(movable) {
+		let index = this.movables.indexOf(movable);
+		
+		if (index > -1) {
+  			this.movables.splice(index, 1);
+		}
 	}
 
-	// rename to getTarget
-	// check if drawable has been clicked
-	getTargetedMovable(target) {
-		for (var i in this.drawables) {
+	addDebugable(debugable) {
+		this.debugables.push(debugable);
 
-			if (this.drawables[i].isInBox(target)) {
-				return this.drawables[i];
-			}
-
-	    }
-
+		if (this.debugMode) {
+			debugable.debug();
+		}
 	}
+
+	removeDebugable(debugable) {
+
+		let index = this.debugables.indexOf(debugable);
+		
+		if (index > -1) {
+  			this.debugables.splice(index, 1);
+		}
+
+		debugable.debugOff();
+	
+	}
+
+	toggleDebug() {
+
+		this.debugMode = !this.debugMode;
+
+		if (this.debugMode) {
+			for (var i in this.debugables) {
+				this.debugables[i].debug();
+		    }
+		} else {
+			for (var i in this.debugables) {
+				this.debugables[i].debugOff();
+		    }
+		}
+	}
+
 }
 
 function onKeyDown(event) {
@@ -187,67 +166,11 @@ function onKeyDown(event) {
 	//if (!engine.enableInput) return;
 
 	if (event.key == "d") {
-		engine.debugMode = !engine.debugMode;
+		engine.toggleDebug();
 	}
 
 }
 
-function onMouseClick(event) {
-
-	event.preventDefault();
-
-	if (!engine.enableInput) return;
-
-	target = engine.getTarget(event);
-
-	// check if a drawable is been targeted and has registered event handlers
-	// if such an object can be found, let it handle the event
-	// if none can be found, let the engine handle the event
-
-	// TODO: Supply event with coordinates and target
-	targetedObject = engine.getTargetedMovable(target);
-	if (targetedObject && targetedObject.onTarget) {
-		targetedObject.onTarget();
-	} else {
-	    engine.dispatchEvent("target", target);
-	}
-
-}
-
-function onTouchStart(event) {
-
-	if (!engine.enableInput) return;
-
-	event.preventDefault();
-
-	var touches = event.changedTouches;
-
-	for (var i = 0; i < touches.length; i++) {
-
-		target = engine.getTouchTarget(touches[i]);
-
-		targetedObject = engine.getTargetedMovable(target);
-		if (targetedObject && targetedObject.onTarget) {
-			targetedObject.onTarget();
-		} else {
-		    engine.dispatchEvent("target", target);
-		}
-
-    }
-}
-
-function onMouseMove(event) {
-
-	event.preventDefault();
-
-	// Todo: correctly determine position of feet of actor
-	target = engine.getTarget(event);
-
-	engine.coordinatesOverlay.innerHTML = 
-		//event.offsetX + ", " + event.offsetY + "<br />" +
-		target.x + ", " + target.y;
-
-    //engine.dispatchEvent("target", target);
-}
+window.addEventListener('keydown',onKeyDown,false);
 
 engine = new Engine(document.getElementById('gameCanvas'));

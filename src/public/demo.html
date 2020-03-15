@@ -11,26 +11,11 @@
 
 <body>
 
-  <div class="flexContainer">
-    <canvas id="gameCanvas" class="tatooine" width="920" height="480" moz-opaque></canvas>
-  </div>
-
-  <div class="flexContainer" id="textContainer">
-    <div id="overlayContainer">
-      <div id="demobuttons" class="" style="position: absolute; right: 1rem; bottom: 0; width: 12rem; height: 10rem;line-height: 3rem;">
-      <a onClick="demo1();" class="button buttonOutline">1</a>
-      <a onClick="demo2();" class="button buttonOutline">2</a>
-      <a onClick="demo3();" class="button buttonOutline">3</a>
-      <a onClick="demo4();" class="button buttonOutline">4</a>
-      <a onClick="demo5();" class="button buttonOutline">5</a>
-      <a onClick="demo6();" class="button buttonOutline">6</a>
-      <a onClick="demo7();" class="button buttonOutline">7</a>
-  </div>
-
-    </div>
-  </div>
+  <div id="flexContainer" class="flexContainer" />
 
   <!-- engine stuff -->
+  <script src="js/lib/pixi.js"></script>
+  <script src="js/lib/pixi-layers.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.1.1/math.min.js"></script>
   <script src="js/engine/EventDispatcher.js"></script>
   <script src="js/engine/Walkbox.js"></script>
@@ -50,7 +35,60 @@
   <script src="js/game/demo-5.js"></script>
   <script src="js/game/demo-6.js"></script>
   <script src="js/game/demo-7.js"></script>
-  <script>demo7();</script>
+
+  <script>
+
+    // TODO: create some game/engine finish callback when the loader has loaded
+    // in order to encapsulate pixi
+    function addButtons() {
+
+        new Button("toggle debugger")
+            .setPosition({ x: 10, y: 215 })
+            .onSelect(function() {
+
+                engine.toggleDebug()
+                console.log(engine.debugMode);
+
+            }).show();
+
+        for (var i = 0;i < 7; i++) {
+
+            var button = new Button((i+1)+"")
+                .setPosition({ x: 385 + (i % 3) * 21, y: 185 + Math.floor(i/3) * 16 })
+                .onSelect(function(event) {
+
+                    window["demo"+event.currentTarget.name]();
+        
+            }).show();
+
+        }
+
+    }
+
+    var game = {
+        currentRoom: null,
+        show: function(newRoom) {
+            if (this.currentRoom) {
+                newRoom.init();
+                this.currentRoom.transitionTo(newRoom);
+                this.currentRoom = newRoom;
+            } else {
+                this.currentRoom = newRoom;
+                this.currentRoom.init();
+                this.currentRoom.enter();
+            }
+        }
+    }
+
+    engine.init();
+
+    PIXI.loader.load(function() {
+        addButtons();
+        demo1();
+
+    });
+
+  </script>
 </body>
 </body>
 </html>
