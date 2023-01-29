@@ -1,87 +1,123 @@
+var text = { 
+	Font: {
+		FONT_DEFAULT: '8px C64 Pro',
+		FONT_OUTLINE: '8px C64 Pro Outline'
+	},
+	Align: {
+		LEFT: 'left',
+		CENTER: 'center',
+		RIGHT: 'right'
+	}
+}
+
+// Load resourdes with loader. Loader is called when the parent room is being entered
+// Assume these are loaded when the show() method is called
+if (!PIXI.loader.resources["resources/fonts/c64-outline.xml"]) {
+	PIXI.loader.add("resources/fonts/c64-outline.xml");
+}
+
+if (!PIXI.loader.resources["resources/fonts/c64.xml"]) {
+	PIXI.loader.add("resources/fonts/c64.xml");
+}
+
 class Text {
 	
 	constructor(content) {
 
-		this.type = "div"
 		this.content = content;
 		this.position = { x: 0, y: 0 };
-		this.dimensions = null;
-		this.className = 'textOverlay';
-		this.classList = []
-		
-	}
 
-	setType(type) {
-		this.type = type;
-		return this;
+		// TODO: Rename to width
+		this.maxWidth = 460;
+		
+		this.color = '#FFFFFF';
+		
+		this.fontStyle = text.Font.FONT_OUTLINE;
+		this.alignment = text.Align.LEFT;
 	}
 
 	setPosition(position) {
 		this.position = position;
+
+		if (this.bitmapFontText) {
+			this.bitmapFontText.x = this.position.x;
+	        this.bitmapFontText.y = this.position.y;
+		}
+
 		return this;
 	}
 
-	setDimensions(dimensions) {
-		this.dimensions = dimensions;
+	setMaxWidth(maxWidth) {
+		this.maxWidth = maxWidth;
 		return this;
 	}
 
-	addClassName(className) {
-		this.classList.push(className);
+	setColor(color) {
+		this.color = color;
 		return this;
 	}
 
-	show(effect, dialog) {
+	setFontStyle(fontStyle) {
+		this.fontStyle = fontStyle;
+		return this;
+	}
 
-		if (effect) {
+	setAlignment(alignment) {
+		this.alignment = alignment;
+		return this;
+	}
+
+	getDimensions() {
+		if (!this.bitmapFontText) this.bitmapFontText = this.createBitmapFont();
+
+		return { width: this.bitmapFontText.textWidth, height: this.bitmapFontText.textHeight };
+	}
+	
+	createBitmapFont() {
+
+		var bitmapFontText = new PIXI.extras.BitmapText(
+			this.content, 
+			{ 
+				font: this.fontStyle, 
+				align: this.alignment,
+				tint: parseInt(this.color.replace('#', ''), 16),
+			}
+		);
+
+        bitmapFontText.x = this.position.x;
+        bitmapFontText.y = this.position.y;
+
+        bitmapFontText.maxWidth = this.maxWidth;
+        
+        return bitmapFontText;
+
+	}
+
+	show(effect) {
+
+		/*if (effect) {
 			console.info(effect, ':', this.content);
 		} else {
 			console.info(this.content);
-		}
+		}*/
+
+		if (!this.bitmapFontText) this.bitmapFontText = this.createBitmapFont();
+
+        app.stage.addChild(this.bitmapFontText);
+        this.bitmapFontText.parentGroup = uiGroup;
+
+        engine.addDebugable(this);
 		
-		this.element = document.createElement(this.type);
-		
-		if (this.className) {
-			this.element.classList.add(this.className);
-		}
-
-		if (effect) {
-			this.element.classList.add(effect);
-		}
-
-		//this.element.classList.add('debug');
-
-		for (var i in this.classList) {
-			this.element.classList.add(this.classList[i]);
-		}
-		
-		// rough positioning
-		this.element.style.marginLeft = (this.position.x / 460 * 100) + "%";
-		// strange magic factor is needed on y-axis (probably a css issue)
-		this.element.style.marginTop = (this.position.y / (240 * 1.92) * 100) + "%";
-		
-		// rough sizing
-		if (this.dimensions) {
-			this.element.style.width = (this.dimensions.width / 460 * 100) + "%";
-			this.element.style.height = (this.dimensions.height / 240 * 100) + "%";
-		}
-
-		// do not use innerhtml > performance?
-		// frist span: center bottom, second span: centered bubble that autogrows with content
-	    if (dialog) {
-			this.element.innerHTML = "<span><span class='dialogContent'>" + this.content + "</span></span>";
-	    } else {
-	    	this.element.innerHTML = this.content;
-	    }
-
-	    document.getElementById('overlayContainer').appendChild(this.element);
-
 		return this;
 	}
 
 	hide(effect) {
 
-		if (effect) {
+		engine.removeDebugable(this);
+
+		app.stage.removeChild(this.bitmapFontText);
+
+		/*if (effect) {
 			console.debug('hide with', effect, this.content);
 			this.element.classList.add(effect);
 		} else {
@@ -89,10 +125,25 @@ class Text {
 				console.debug('hide', this.content);
 				this.element.parentNode.removeChild(this.element);
 			}
-		}
-
-
+		}*/
 		return this;
+	}
+
+	debug() {
+
+		this.debugGraphics = new PIXI.Graphics();
+
+		app.stage.addChild(this.debugGraphics);
+
+		this.debugGraphics.lineStyle(1, 0xff0000);
+
+		// draw rect
+		this.debugGraphics.drawRect(this.bitmapFontText.x, this.bitmapFontText.y, this.bitmapFontText.width, this.bitmapFontText.height);
+	}
+
+	debugOff() {
+		app.stage.removeChild(this.debugGraphics);
+		this.debugGraphics == null;
 	}
 
 }

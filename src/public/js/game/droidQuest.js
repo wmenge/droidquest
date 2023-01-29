@@ -13,9 +13,13 @@ var game = {
 		corridorRoom.enter();*/
 
 		// move to engine init?
-		requestAnimationFrame(mainLoop);
+		//requestAnimationFrame(mainLoop);
 	}
 }
 
-engine.init();
-game.init();
+
+
+//PIXI.loader.load(function() {
+	engine.init();
+	game.init();
+//});

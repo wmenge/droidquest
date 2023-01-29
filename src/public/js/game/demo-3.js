@@ -1,46 +1,29 @@
-var game3 = {
-	init: function() {
-
-		var room = new DemoRoom3("tatooine");
-
-		room.walkbox = {
-				a: { x: 0, y: 140},
-				b: { x: 460, y: 240}
-		};
-
-		room.init();
-		room.enter();
-		
-		requestAnimationFrame(mainLoop);
-	}
-}
-
 class DemoRoom3 extends Room {
 
 	init() {	
 		super.init();
 
 		this.mainActor = new Actor('r2d2')
-			.setScaleFactor(2)
-			.setOrigin({ x: -36 / 2, y: -40 });
+			//.setScaleFactor(2)
+			.setOrigin({ x: 36 / 2, y: 40 });
 		
 		this.secondActor = new Actor('c3po')
-			.setOrigin({ x: -44 / 2, y: -70 });
+			.setOrigin({ x: 44 / 2, y: 70 });
 
 		this.thirdActor = new Actor('r2d2')
-			.setOrigin({ x: -36 / 2, y: -40 });
+			.setOrigin({ x: 36 / 2, y: 40 });
 
 		this.fourthActor = new Actor('c3po')
-			.setOrigin({ x: -44 / 2, y: -70 });
+			.setOrigin({ x: 44 / 2, y: 70 });
 		
 		this.tower = new Prop('tower')
-			.setOrigin({ x: -58 / 2, y: -161 })
+			.setOrigin({ x: 58 / 2, y: 161 })
 			.setPosition({x: 430, y: 176 });
 	}
 
-	enter() {
+	onEnter() {
 
-		super.enter();
+		super.onEnter();
 
 		this.mainActor.setPosition({ x: 80, y: 160});
 		this.mainActor.show();
@@ -58,17 +41,9 @@ class DemoRoom3 extends Room {
 
 		this.text = new Text("Tech demo 3: Multiple droids, each with their own 'thread' with synchronized (blocking) scripting")
 			.setPosition({ x: 10, y: 5 })
-			.addClassName('small')
-			.addClassName('outline')
+			//.addClassName('small')
+			//.addClassName('outline')
 			.show();
-
-		this.debugButton = new Button("toggle debugger")
-			.setPosition({ x: 10, y: 220 })
-			.addClassName('small')
-			.addClassName('buttonOutline').onSelect(function() {
-				engine.debugMode = !engine.debugMode;
-			}).show();
-
 
 		/* 
 			Scripting moves
@@ -155,6 +130,5 @@ class DemoRoom3 extends Room {
 }
 
 function demo3() {
-	engine.init();
-	game3.init();
+	game.show(new DemoRoom3("tatooine"));
 }

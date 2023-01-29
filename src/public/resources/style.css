@@ -13,7 +13,7 @@ html, body {
 
   cursor: crosshair;
 
-  text-shadow: 0 0 10px #ffd700;
+  /*text-shadow: 0 0 10px #ffd700;*/
 
   overflow:hidden;
 }
@@ -25,19 +25,19 @@ a, a:visited {
 
 a:hover {
   color: #ffff66;
-  text-shadow: 0 0 10px #ffd700;
+  /*text-shadow: 0 0 10px #ffd700;*/
 }
 
 .blue {
   color: rgb(75, 213, 238);
-  text-shadow: 
+  /*text-shadow: 
     0 0 10px rgba(255,255,255,.0125),
     /*0 0 20px rgba(255,255,255,.0125), 
     0 0 30px rgba(255,255,255,.0125), */
-    0 0 20px rgb(75, 213, 238)
+    /*0 0 20px rgb(75, 213, 238)
     /*0 0 70px rgb(75, 213, 238), 
     0 0 80px rgb(75, 213, 238), 
-    0 0 100px rgb(75, 213, 238)*/;
+    0 0 100px rgb(75, 213, 238)*//*;*/
   
 }
 
@@ -80,11 +80,11 @@ a:hover {
 }
 
 .outline {
-  text-shadow: .125vw .125vw 0 black, 0 0 10px rgba(255,0,0,.0125);
+  /*text-shadow: .125vw .125vw 0 black, 0 0 10px rgba(255,0,0,.0125);*/
 }
 
 .buttonOutline, a.buttonOutline  {
-  box-shadow: .125vw .125vw 0 black, 0 0 10px rgba(255,0,0,.0125);
+  /*box-shadow: .125vw .125vw 0 black, 0 0 10px rgba(255,0,0,.0125);*/
 }
 
 h1 {
@@ -126,7 +126,7 @@ button {
   top: 0;
   left: 0;
 
-  box-shadow: 0 0 10px #ffd700;
+  /*box-shadow: 0 0 10px #ffd700;*/
   
   pointer-events:auto;
 }
@@ -139,10 +139,10 @@ button, .button, .button:visited {
   
   cursor: crosshair;
 
-  text-shadow: none;
+  /*text-shadow: none;*/
   text-decoration: none;
 
-  box-shadow: 0 0 10px #ffd700;
+  /*box-shadow: 0 0 10px #ffd700;*/
   
   pointer-events:auto;
 }
@@ -159,9 +159,9 @@ button {
 
 button:hover, .button:hover {
   background-color: #ffff66;
-  box-shadow: 0 0 30px #ffd700;
+  /*box-shadow: 0 0 30px #ffd700;*/
   color: #440000;
-  text-shadow: 0 0 3px #ff0000;
+  /*text-shadow: 0 0 3px #ff0000;*/
   /*, 0 0 40px #ffd700;*/
   /*0 0 10px rgba(255,255,255,.0125) , 0 0 20px rgba(255,255,255,.0125) , 0 0 30px #ffff33, 0 0 40px #ffff33, 0 0 70px #ffff33 , 0 0 80px #ffff33 , 0 0 100px #ffff33;*/
   

@@ -1,19 +1,14 @@
 class Prop { 
 
-	constructor(sprite) {
+	constructor(spriteName) {
 
 		var _this = this;
 
-		if (sprite instanceof Sprite) {
-			this.name = 'actor';
-		} else {
-			this.name = sprite;
-			_this = this;
-			this.spritePromise = getSprite(sprite).then(function(spriteObj) {
-				_this.sprite = spriteObj;
-			});
-		}
+		this.name = spriteName;
 
+    	this.loadResource();
+
+    	// remove, as coordinates are already stored in sprite?
 		this.position = { x: 0, y: 0 };
 		this.origin = { x: 0, y: 0 };
 		
@@ -26,13 +21,23 @@ class Prop {
 
 		this.shown = false;
 
-		console.debug('Create', this.name, 'at', this.position);
+		console.debug('Create', this.name);
+	}
+
+	// Load resourdes with loader. Loader is called when the parent room is being entered
+    // Assume these are loaded when the show() method is called
+    loadResource() {
+		if (!PIXI.loader.resources["resources/sprites/" + this.name + ".png"]) {
+	    	PIXI.loader.add("resources/sprites/" + this.name + ".png");
+    	}
 	}
 
 	setName(name) {
 		this.name = name;
 	}
 
+	// check if there is some magic to allow these setters to be called
+	// when doing something.position = somePosition
 	setPosition(position) {
 		this.position = position;
 		return this;
@@ -49,49 +54,55 @@ class Prop {
 	}
 
 	setScaleFactor(scaleFactor) {
-		this.scaleFactor = scaleFactor;
+		this.sprite.scale.x = scaleFactor;
+    	this.sprite.scale.y = scaleFactor;
+		//this.scaleFactor = scaleFactor;
 		return this;
-	}
-
-	draw(ctx, timestamp, engineScaleFactor) {
-
-		// performance: prevent object creation
-		var spriteScale = { x: engineScaleFactor.x * this.scaleFactor, y: engineScaleFactor.y * this.scaleFactor };
-
-		this.sprite.draw(ctx, (this.position.x + this.origin.x * this.scaleFactor) * engineScaleFactor.x, (this.position.y + this.origin.y * this.scaleFactor) * engineScaleFactor.y, this.tag, timestamp, spriteScale);
-
-	}
-
-	// Prop
-	get box() {
-
-		var dimensions = this.sprite.getDimensions();
-
-		return [ 
-			{ 
-				x: this.position.x + this.origin.x,
-				y: this.position.y + this.origin.y
-			},
-			{ 
-				x: this.position.x + this.origin.x + dimensions.width,
-				y: this.position.y + this.origin.y + dimensions.height
-			}
-
-		]
 	}
 
 	isInBox(point) {
 
-		var box = this.box;
+		return this.sprite.containsPoint(point);
+	}
 
-		return (point.x >= box[0].x && 
-		        point.x <= box[1].x &&
-		        point.y >= box[0].y && 
-		        point.y <= box[1].y);
+
+	debug() {
+
+		this.debugGraphics = new PIXI.Graphics();
+
+		app.stage.addChild(this.debugGraphics);
+
+		this.debugGraphics.lineStyle(1, 0xff0000);
+
+		// draw rect
+		// TODO: Bug: when called from from Prop.show() this.sprite doesn't 
+		// have the correct dimensions
+		this.debugGraphics.drawRect(0, 0, this.sprite.width, this.sprite.height);
+
+		// draw origin
+		/*this.debugGraphics.lineStyle(1, 0x00ff00);
+
+		let cx = this.origin.x;
+		let cy = this.origin.y;
+		let length = 4;
+
+		this.debugGraphics.moveTo(cx, cy - length);
+		this.debugGraphics.lineTo(cx, cy + length + 1);
+		this.debugGraphics.moveTo(cx - length - 1, cy);
+		this.debugGraphics.lineTo(cx + length, cy);
+		
+		this.debugGraphics.position.set(
+			this.position.x - this.origin.x,
+			this.position.y - this.origin.y)*/
 
 	}
 
-	debug(ctx, scaleFactor) {
+	debugOff() {
+		app.stage.removeChild(this.debugGraphics);
+		this.debugGraphics == null;
+	}
+
+	/*debug(ctx, scaleFactor) {
 
 		var dimensions = this.sprite.getDimensions();
 
@@ -101,7 +112,7 @@ class Prop {
 			dimensions.width * scaleFactor.x, 
 			dimensions.height * scaleFactor.y);
 
-	}
+	}*/
 
 	isShown() {
 		return this.shown = true;
@@ -109,12 +120,44 @@ class Prop {
 
 
 	show() {
-		var _this = this;
+		/*var _this = this;
 		this.spritePromise.then(function(result) {
 			engine.drawables.push(_this);
-		});
+		});*/
+
+	
+		//this.sprite = new PIXI.Sprite(PIXI.utils.TextureCache["resources/sprites/" + this.name + ".png"]);
+
+		this.sprite = new PIXI.Sprite(PIXI.loader.resources["resources/sprites/" + this.name + ".png"].texture.clone());
+  
+  		var _this = this;
+
+  		// add click event
+  		// TODO: Determine when to do this
+  		this.sprite.interactive = true;
+
+		this.sprite.click = function(event) {
+
+			_this.sprite.interactive = false;
+
+			///event.data.originalEvent.preventDefault();
+			event.stopPropagation()
+
+			if (_this.onTarget) _this.onTarget(event);
+		}
+
+		this.sprite.position.set(
+			this.position.x - this.origin.x,
+			this.position.y - this.origin.y)
+
+		this.sprite.zIndex = this.position.y;
+		
+		app.stage.addChild(this.sprite);
+		this.sprite.parentGroup = spriteGroup;
 
 		this.shown = true;
+
+		engine.addDebugable(this);
 
 		console.debug('Show', this.name, 'at', this.position);
 
@@ -122,11 +165,10 @@ class Prop {
 	}
 
 	hide() {
-		var index = engine.drawables.indexOf(this);
 		
-		if (index > -1) {
-  			engine.drawables.splice(index, 1);
-		}
+		engine.removeDebugable(this);
+
+		app.stage.removeChild(this.sprite);
 
 		console.debug('hide', this.name);
 	}

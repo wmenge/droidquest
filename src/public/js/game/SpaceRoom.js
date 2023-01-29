@@ -1,17 +1,19 @@
 class SpaceRoom extends Room {
 
-	enter() {
+	onEnter() {
 		
-		super.enter();
+		super.onEnter();
 
 		this.text = new Text("Je bent ontsnapt!")
 			.setPosition({ x: 170, y: 80 })
+			.setColor('#ffd700')
 			.show('fadeIn');
 
-		this.footer = new Text('Use the <a href="https://github.com/wmenge/droidquest" target="_blank">source</a> Luke!<br><br><a href="demo.html">Click for Tech demos</a>')
+		this.footer = new Text('Use the source Luke!')
 			.setPosition({ x: 10, y: 220 })
-			.addClassName('center')
-			.addClassName('small')
+			.setColor('#ffd700')
+			//.addClassName('center')
+			//.addClassName('small')
 			.show('fadeIn');
 
 		var _this = this;

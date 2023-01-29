@@ -3,10 +3,15 @@ class Actor extends Prop {
 	constructor(sprite) {
 
 		super(sprite);
-		
+
 		this.target = null;
 		this.velocity = 60; // pixels per second
 
+		var _this = this;
+		this.animationSheetPromise = getSprite(sprite).then(function(animationSheet) {
+			_this.animationSheet = animationSheet;
+		});
+	
 		// rename to sprite state (or direction on actor level)
 		this.state = "Front";
 		this.tag = this.state;
@@ -15,7 +20,20 @@ class Actor extends Prop {
 		this.onTarget = null;
 		this.onMoveStart = null;
 
+		//this.position = { x: 0, y: 0 };
+		
 		this.talkingSpeed = 25; // characters per second
+	}
+
+	// Load resourdes with loader. Loader is called when the parent room is being entered
+    // Assume these are loaded when the show() method is called
+    loadResource() {
+
+    	if (!PIXI.loader.resources["resources/sprites/" + this.prite + ".json"]) {
+	    	PIXI.loader.add("resources/sprites/" + this.sprite + ".json");
+    	}    	
+    	
+    	super.loadResource();
 	}
 
 	setVelocity(velocity) {
@@ -23,10 +41,10 @@ class Actor extends Prop {
 		return this;
 	}
 
-	setScaleFactor(scaleFactor) {
+	/*setScaleFactor(scaleFactor) {
 		this.scaleFactor = scaleFactor;
 		return this;
-	}
+	}*/
 
 	setState(state) {
 		this.state = state;
@@ -38,16 +56,19 @@ class Actor extends Prop {
 		this.talkingSpeed = talkingSpeed;
 		return this;
 	}
+
+	setDialogColor(color) {
+		this.dialogColor = color;
+		return this;
+	}
  
 	show() {
 
 		super.show();
 
-		var _this = this;
-		this.spritePromise.then(function(result) {
-			engine.movables.push(_this);
-		});
-
+		// move to engine
+		engine.addMovable(this);
+		
 		return this;
 	}
 
@@ -55,15 +76,7 @@ class Actor extends Prop {
 
 		super.hide();
 
-		var index = engine.movables.indexOf(this);
-		
-		if (index > -1) {
-  			engine.movables.splice(index, 1);
-		}
-
-		this.shown = false;
-
-		console.debug('Hide', this.name);
+		engine.removeMovable(this);
 
 		return this;
 	}
@@ -87,10 +100,6 @@ class Actor extends Prop {
 	}
 
 	moveTo(newTarget, walkbox) {
-
-		// If no obbject is currently moving, the engine isn't requesting frames,
-		// therefore request one to be sure
-		//requestAnimationFrame(mainLoop);
 
 		// shallow copy by value
 		this.oldPosition = { x: this.position.x , y: this.position.y };
@@ -185,45 +194,28 @@ class Actor extends Prop {
 
 		return promise;
 	}
-
-	debug(ctx, engineScaleFactor) {
-
-		// performance: prevent object creation
-		var scaleFactor = { x: engineScaleFactor.x * this.scaleFactor, y: engineScaleFactor.y * this.scaleFactor };
-
-		var dimensions = this.sprite.getDimensions();
-	
-		// old position
-		if (this.oldPosition) {
-			ctx.strokeRect((this.oldPosition.x + this.origin.x * this.scaleFactor) * engineScaleFactor.x, (this.oldPosition.y + this.origin.y * this.scaleFactor) * engineScaleFactor.y, dimensions.width * scaleFactor.x, dimensions.height * scaleFactor.y);
-		} else {
-			ctx.strokeRect((this.position.x + this.origin.x * this.scaleFactor) * engineScaleFactor.x, (this.position.y + this.origin.y * this.scaleFactor) * engineScaleFactor.y, dimensions.width * scaleFactor.x, dimensions.height * scaleFactor.y);	
-		}
-
-		// target
-		if (this.target) {
-			ctx.strokeRect((this.target.x + this.origin.x * this.scaleFactor) * engineScaleFactor.x, (this.target.y + this.origin.y * this.scaleFactor) * engineScaleFactor.y, dimensions.width * scaleFactor.x, dimensions.height * scaleFactor.y);
-		}
-
-		// line to target
-		if (this.oldPosition && this.target) {
-			ctx.beginPath();
-			ctx.moveTo(this.oldPosition.x * engineScaleFactor.x, this.oldPosition.y * engineScaleFactor.y);
-			ctx.lineTo(this.target.x * engineScaleFactor.x,this.target.y * engineScaleFactor.y);
-			ctx.stroke();
-		}
-
-	}
 		
+	//pixi js delta is a factor: 1 means each frame is running as expected
 	update(delta) {
 
-		if (this.target == null) {
-			return;
-			this.tag = this.state;
+		// get correct animation frame
+		if (this.animationSheet) {
+			var frame = this.animationSheet.getFrame(app.ticker.lastTime, this.tag);
+			let rectangle = new PIXI.Rectangle(frame.frame.x, frame.frame.y, frame.frame.w, frame.frame.h);
+			this.sprite.texture.frame = rectangle;
+		} else {
+			let rectangle = new PIXI.Rectangle(0, 0, this.sprite.width, this.sprite.height);
+			this.sprite.texture.frame = rectangle;
 		}
 
-		var dx = this.velocityComponents.x * delta / 1000;
-		var dy = this.velocityComponents.y * delta / 1000;
+		//console.debug('entering update of', this.name);
+		if (this.target == null) {
+			this.tag = this.state;
+			return;
+		}
+
+		var dx = this.velocityComponents.x * delta / 60;
+		var dy = this.velocityComponents.y * delta / 60;
 
 		if (dx > 0) {
 			if (dx > (this.target.x - this.position.x)) {
@@ -253,6 +245,21 @@ class Actor extends Prop {
 			}
 		}
 
+		//console.debug('updating' + this.name, 'position at', this.position);
+		this.sprite.position.set(
+			this.position.x - this.origin.x,
+			this.position.y - this.origin.y)
+
+		if (this.debugGraphics) {
+			this.debugGraphics.position.set(
+				this.position.x - this.origin.x,
+				this.position.y - this.origin.y)
+		}
+
+		// temp, implement zindex as layers
+		this.sprite.zOrder = this.position.y;
+		this.sprite.zIndex = this.zIndex ? this.zINdex : this.position.y;
+
 		if (!this.isMoving()) {
 			this.tag = this.state;
 			this.oldPosition = null;
@@ -269,55 +276,53 @@ class Actor extends Prop {
 	}
 
 	// todo: create talkbubble class?
-	talk(line, direction) {
+	// TODO: disable normal interactino during speech?
+	talk(line, direction = "Front") {
 
 		const screenMargin = 10;
 		const dialogWidth = 200;
 		const baselineDuration = 500; //ms
 		const dialogPrePause = 200;
 
-		console.info(this.name, 'says:');
+		this.setState(direction);
+
+		console.info(this.name + 'says:');
 
 		// duration = baseline duration + time per character
 		// this way, shorter lines get more time than long lines
 		var duration = baselineDuration + line.length / this.talkingSpeed * 1000;
 
-		var _this = this;
+		var text = new Text(line).setMaxWidth(dialogWidth).setColor(this.dialogColor ? this.dialogColor : "#FFFFFF");
 
-		var text = new Text(line)
-			.setDimensions({width: dialogWidth, height: 0})
-			.addClassName('outline')
-			.addClassName('dialog')
-			.addClassName(this.name) // allows to specify font color in css
-			//.addClassName('debug')
-
-		this.spritePromise.then(function(result) {
-
-			_this.setState(direction);
-
-			var dimensions = _this.sprite.getDimensions();
+		text.setAlignment('center')
 			
-			var textPosition = { 
-				x: Math.min(engine.gameDimensions.width - (dialogWidth + screenMargin), Math.max(screenMargin, _this.position.x - (dialogWidth/2))), 
-				y: _this.position.y - (dimensions.height) 
-			};
-			
-			text.setPosition(textPosition);
-				
-			if (_this.position.x <= (dialogWidth/2 - screenMargin)) {
-				text.addClassName('left');
-			} else if (_this.position.x >= engine.gameDimensions.width - (dialogWidth + screenMargin)) {
-				text.addClassName('right');
-			} else {
-				text.addClassName('center');
-			}
+		var actorDimensions = { width: this.sprite.width, height: this.sprite.height };
+		var textDimensions = text.getDimensions();
 		
-			setTimeout(function() {
-				text.show(null, true);
-			}, dialogPrePause);
+		/*var textPosition = { 
+			x: Math.min(engine.gameDimensions.width - (dialogWidth + screenMargin), Math.max(screenMargin, _this.position.x - (dialogWidth/2))), 
+			y: _this.position.y - (dimensions.height + screenMargin) 
+		};*/
+		
+		var textPosition = { 
+			x: Math.min(engine.gameDimensions.width - (textDimensions.width + screenMargin), Math.max(screenMargin, this.position.x - (textDimensions.width / 2))),
+			y: this.position.y - (actorDimensions.height + textDimensions.height) 
+		};
 
-		});
-		
+		text.setPosition(textPosition);
+			
+		/*if (_this.position.x <= (dialogWidth/2 - screenMargin)) {
+			text.addClassName('left');
+		} else if (_this.position.x >= engine.gameDimensions.width - (dialogWidth + screenMargin)) {
+			text.addClassName('right');
+		} else {
+			text.addClassName('center');
+		}*/
+	
+		setTimeout(function() {
+			text.show(null, true);
+		}, dialogPrePause);
+
 		var outsideResolve;
 
 		let promise = new Promise(function(resolve) { 

@@ -3,25 +3,27 @@ class IntroRoom extends Room {
 	init() {	
 		super.init();
 
-		this.intro = new Text("A long time ago<br />in a galaxy far, far away...")
+		this.intro = new Text("A long time ago\nin a galaxy far, far away...")
 			.setPosition({ x: 140, y: 100 })
-			.addClassName('blue');
+			.setColor("#4bd6ee");
+		//	.addClassName('blue');
 
 		this.logo = new Actor('logo')
-			.setOrigin({ x: -(135 + 1) / 2, y: -64 });
+			.setOrigin({ x: (135 + 1) / 2, y: 64 });
 			
 		this.imagePanel = new Actor('intro', false)
-			.setOrigin({ x: -129, y: -180 / 2 });
+			.setOrigin({ x: 129, y: 180 / 2 });
 			
 		var _this = this;
 
 		this.startButton = new Button("Start!")
 			.setPosition({ x: 200, y: 160 });
 
-		this.footer = new Text('A classic point and click adventure by <a href="https://twitter.com/wmenge" target="_blank">@wmenge</a><br><br><a href="demo.html">Click for Tech demos</a>')
-			.setPosition({ x: 10, y: 220 })
-			.addClassName('center')
-			.addClassName('small');
+		this.footer = new Text('A classic point and click adventure by @wmenge')
+		    .setColor('#ffd700')
+			.setPosition({ x: 10, y: 220 });
+			//.addClassName('center')
+			//.addClassName('small');
 			
 		this.startButton.onSelect(function() {
 
@@ -33,13 +35,18 @@ class IntroRoom extends Room {
 			_this.imagePanel.moveRelative({ x: -140, y: 0});
 
 			_this.heading = new Text("Help Prinses Leia!")
+			    .setColor('#ffd700')
 				.setPosition({ x: 30, y: 40 })
-				.setType('h1')
+				.setMaxWidth(200)
+				//.setType('h1')
 				.show('fadeIn');
 
 			_this.text = new Text("De prinses heeft geheime plannen voor de rebellen! Vind de plannen en ontsnap uit het ruimteschip!")
-				.setPosition({ x: 30, y: 80 })
-				.setDimensions({ width: 250, height: 30 })
+				.setPosition({ x: 30, y: 60 })
+				.setColor('#ffd700')
+				.setMaxWidth(200)
+
+				//.setDimensions({ width: 250, height: 30 })
 				.show('fadeIn');
 
 			_this.okButton = new Button("OK!")
@@ -59,9 +66,9 @@ class IntroRoom extends Room {
 			});
 	}
 
-	enter() {
+	onEnter() {
 
-		super.enter();
+		super.onEnter();
 
 		// initial positions of logo and image panel (outside of view)
 		this.logo.setPosition({ x: (460 / 2) , y: -64 });
@@ -88,7 +95,7 @@ class IntroRoom extends Room {
 				
 			})(_this);
 
-		}, 5000)
+		}, 1000)
  
 	}
 

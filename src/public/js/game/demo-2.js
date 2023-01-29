@@ -1,58 +1,51 @@
-var game2 = {
-	init: function() {
-
-		var room = new DemoRoom2("tatooine");
-		room.init();
-		room.enter();
-		
-		requestAnimationFrame(mainLoop);
-	}
-}
-
 class DemoRoom2 extends Room {
 
-	enter() {
+	init() {
 
-		super.enter();
+		super.init();
 
-		this.text = new Text("Tech demo 2: Army of droids, syncrhonized scripting. Use the buttons to add or remove droids!")
-			.setPosition({ x: 10, y: 5 })
-			.addClassName('small')
-			.addClassName('outline')
-			.show();
-
-		this.removeButton = new Button("-")
-			.setPosition({ x: 10, y: 20 })
-			.addClassName('small')
-			.addClassName('buttonOutline');
-		
-		this.removeButton.selectHandler = removeActor;
-		this.removeButton.show();
-
-		this.addButton = new Button("+")
-			.setPosition({ x: 29, y: 20 })
-			.addClassName('small')
-			.addClassName('buttonOutline');
-
-		this.addButton.selectHandler = addActor;
-		this.addButton.show();
-
-		this.debugButton = new Button("toggle debugger")
-			.setPosition({ x: 10, y: 220 })
-			.addClassName('small')
-			.addClassName('buttonOutline').onSelect(function() {
-				engine.debugMode = !engine.debugMode;
-			}).show();
-		
 		this.tower = new Prop('tower')
-			.setOrigin({ x: -58 / 2, y: -161 })
+			.setOrigin({ x: 58 / 2, y: 161 })
 			.setPosition({x: 430, y: 176 });
+
+		// dummy actor so that its resources are loaded during
+		// alternative: load texture directly or have actor method load
+		this.dummyActor = new Actor('r2d2');
+		this.dummyActor = new Actor('c3po');
+
+	}
+		
+	onEnter() {
 
 		this.tower.show();
 
-		for (var i = 0; i < 10; i++) {
+		this.text = new Text("Tech demo 2: Army of droids, syncrhonized scripting. Use the buttons to add or remove droids!")
+			.setPosition({ x: 10, y: 5 })
+			.show();
+	
+		this.minusButton = new Button("-")
+			.setPosition({ x: 10, y: 20 })
+			.onSelect(removeActor)
+			.show();
+
+		this.addButton = new Button("+")
+			.setPosition({ x: 29, y: 20 })
+			.onSelect(addActor)
+			.show();
+
+		for (var i = 0; i < 5; i++) {
 			addActor();
 		}
+	}
+
+	onExit() {
+
+		for (var i = 0; i < actors.length; i++) {
+			actors[i].hide();
+		}
+
+		actors = [];
+
 	}
 
 }
@@ -73,17 +66,17 @@ function removeActor() {
 
 	actor.hide();
 
-	engine.drawables.splice(0, 1);
+	actors.splice(0, 1);
 }
 
 function addActor() {
 
 	var name = (actors.length % 2 == 0 ) ? 'r2d2' : 'c3po';
-	var origin = (actors.length % 2 == 0 ) ? { x: -36 / 2, y: -40 } : { x: -44 / 2, y: -70 };
+	var origin = (actors.length % 2 == 0 ) ? { x: 36 / 2, y: 40 } : { x: 44 / 2, y: 70 };
 
 	var actor = new Actor(name)
 			.setOrigin(origin)
-			.setScaleFactor(Math.random() * 1.5 + .5)
+			//.setScaleFactor(Math.random() * 1.5 + .5)
 			.setPosition(getRandomCoordinates())
 			.show();
 
@@ -101,6 +94,5 @@ function getRandomCoordinates() {
 }
 
 function demo2() {
-	engine.init();
-	game2.init();
+	game.show(new DemoRoom2("tatooine"));
 }

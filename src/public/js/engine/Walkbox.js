@@ -5,33 +5,11 @@ class Walkbox {
 	}
 
 	activate() {
-		engine.debuggables.push(this);
-
-		// temp: show coordinates
-		/*for (var i = 0; i < this._points.length; i++) {
-
-			var point = this._points[i];
-
-			var text = new Text(point.x + ', ' + point.y)
-				.setPosition(point)
-				.addClassName('center')
-				.addClassName('small')
-				.setDimensions({ width: 50, height: 0})
-				.addClassName('outline')
-				.show();
-
-		}*/
-
+		engine.addDebugable(this);
 	}
 
 	deactivate() {
-
-		var index = engine.debuggables.indexOf(this);
-		
-		if (index > -1) {
-  			engine.debuggables.splice(index, 1);
-		}
-
+		engine.removeDebugable(this);
 	}
 
 	// From https://github.com/substack/point-in-polygon
@@ -122,7 +100,45 @@ class Walkbox {
 		}
 	}
 
-	debug(ctx, scaleFactor) {
+	debug() {
+
+		this.debugGraphics = new PIXI.Graphics();
+		
+		app.stage.addChild(this.debugGraphics);
+
+		// draw line
+		this.debugGraphics.lineStyle(1, 0x0000ff);
+
+		if (this._points.length > 2) {
+
+			for (var i in this._points) {
+
+				var point = this._points[i];
+
+				if (i == 0) {
+					this.debugGraphics.moveTo(point.x, point.y);
+				} else {
+					this.debugGraphics.lineTo(point.x, point.y);
+				}
+			}
+
+			var point = this._points[0];
+
+			this.debugGraphics.lineTo(point.x, point.y);
+
+		}
+
+		this.debugGraphics.endFill();
+
+	}
+
+	debugOff() {
+
+		app.stage.removeChild(this.debugGraphics);
+
+	}
+
+	/*debug(ctx, scaleFactor) {
 
 		ctx.save();
 
@@ -147,5 +163,5 @@ class Walkbox {
 
 		ctx.restore();
 		
-	}
+	}*/
 }
